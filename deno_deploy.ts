@@ -29,11 +29,28 @@ function getContentType(path: string): string {
 
 // Load file based on path, supporting compressed versions
 async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Uint8Array | null; compression?: string }> {
+  // Debug log to see what path is being requested
+  console.log(`Attempting to load file: ${path}`);
+  
+  // Clean up path - remove any "/./", normalize slashes
+  const cleanPath = path.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
+  
+  // Determine the base directory - when running from project root, use deploy/ subdirectory
+  const baseDir = "./deploy";
+  // Remove leading ./ from cleanPath to avoid double dot
+  const normalizedPath = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
+  // Ensure the path starts with / for proper joining
+  const finalPath = normalizedPath.startsWith("/") ? normalizedPath : `/${normalizedPath}`;
+  const fullPath = `${baseDir}${finalPath}`;
+  
+  console.log(`Resolved file path: ${fullPath}`);
+  
   // If client supports Brotli compression, try loading the .br file first
   if (acceptsBrotli) {
     try {
-      const brotliFile = await Deno.readFile(`${path}.br`);
+      const brotliFile = await Deno.readFile(`${fullPath}.br`);
       if (brotliFile) {
+        console.log(`Successfully loaded Brotli file: ${fullPath}.br`);
         return { file: brotliFile, compression: "br" };
       }
     } catch (_) {
@@ -43,11 +60,12 @@ async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Ui
   
   // Try to load the original file
   try {
-    const file = await Deno.readFile(path);
+    const file = await Deno.readFile(fullPath);
+    console.log(`Successfully loaded file: ${fullPath}`);
     return { file };
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    console.log(`Failed to load file ${path}: ${errorMessage}`);
+    console.log(`Failed to load file ${fullPath}: ${errorMessage}`);
     return { file: null };
   }
 }
@@ -63,6 +81,9 @@ async function handleRequest(req: Request): Promise<Response> {
   if (path === "/" || (!path.includes(".") && !path.startsWith("/api/"))) {
     path = "/index.html";
   }
+  
+  // Clean up path - normalize "/./assets/" to "/assets/" etc.
+  path = path.replace(/\/\.\//g, "/");
   
   // Convert path to relative server path (remove leading slash)
   const filePath = `.${path}`;

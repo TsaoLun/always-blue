@@ -62,7 +62,7 @@ This will:
 ### Local Test Deployment
 
 ```bash
-cd ./deploy && deno task start
+deno task start
 ```
 
 ### Deploy to Deno Deploy
@@ -78,7 +78,7 @@ deno install --allow-read --allow-write --allow-env --allow-net --allow-run --no
 3. Deploy the project:
 
 ```bash
-deployctl deploy --project=always-blue-demo --prod ./deploy/deno_deploy.ts
+deployctl deploy --project=always-blue-demo --prod ./deno_deploy.ts
 ```
 
 ## Project Structure
