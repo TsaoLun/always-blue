@@ -1,0 +1,22 @@
+# Rust
+/target
+/dist
+**/*.rs.bk
+Cargo.lock
+
+# Dioxus
+/.dio
+
+# 构建产物
+/public/build
+/build
+
+# 编辑器
+.vscode
+.idea
+*.swp
+*.swo
+
+# 操作系统
+.DS_Store
+Thumbs.db

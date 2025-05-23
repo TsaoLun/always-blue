@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dioxus 0.6 Demodioxus | ⛺</title>
+    <meta name="description" content="A Dioxus 0.6 demo application">
+    <!-- Import Tailwind CDN (for production, build Tailwind yourself) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+    </style>
+<link rel="preload" as="script" href="/./assets/always-blue-c16e2ca5b7e050b2.js" crossorigin><link rel="preload" as="fetch" type="application/wasm" href="/./assets/always-blue_bg-c9bc801d732227b2.wasm" crossorigin></head>
+<body>
+    <div id="main"></div>
+<script>
+            // We can't use a module script here because we need to start the script immediately when streaming
+            import("/./assets/always-blue-c16e2ca5b7e050b2.js").then(
+                ({ default: init }) => {
+                init("/./assets/always-blue_bg-c9bc801d732227b2.wasm").then((wasm) => {
+                    if (wasm.__wbindgen_start == undefined) {
+                    wasm.main();
+                    }
+                });
+                }
+            );
+            </script>
+            
+            </body>
+</html>
