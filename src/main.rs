@@ -14,47 +14,88 @@ fn app() -> Element {
     
     rsx! {
         div { 
-            class: "container mx-auto p-4 max-w-md",
-            style: "font-family: system-ui, sans-serif;",
+            class: "min-h-screen bg-base-200 flex items-center justify-center p-4",
+            "data-theme": "cupcake",
             
-            h1 { 
-                class: "text-3xl font-bold text-center mb-6",
-                "Dioxus 0.6 Demo"
-            }
-            
-            div { 
-                class: "bg-blue-500 text-white p-6 rounded-lg shadow-lg",
-                
-                h2 { 
-                    class: "text-xl font-semibold mb-4 text-center",
-                    "Counter: {count}"
-                }
+            div {
+                class: "card w-96 bg-base-100 shadow-xl",
                 
                 div {
-                    class: "flex justify-center space-x-4",
+                    class: "card-body items-center text-center",
                     
-                    button {
-                        class: "bg-white text-blue-500 px-4 py-2 rounded-md font-semibold hover:bg-blue-100 transition-colors",
-                        onclick: move |_| count += 1,
-                        "Increment"
+                    h1 { 
+                        class: "card-title text-3xl font-bold mb-6 text-primary",
+                        "🎯 Dioxus 0.6 Demo"
+                    }
+                    
+                    div {
+                        class: "stats shadow mb-6",
+                        
+                        div {
+                            class: "stat place-items-center",
+                            
+                            div {
+                                class: "stat-title",
+                                "Counter Value"
+                            }
+                            
+                            div {
+                                class: "stat-value text-primary",
+                                "{count}"
+                            }
+                            
+                            div {
+                                class: "stat-desc",
+                                "Click buttons to change"
+                            }
+                        }
+                    }
+                    
+                    div {
+                        class: "card-actions justify-center gap-4",
+                        
+                        button {
+                            class: "btn btn-primary btn-lg",
+                            onclick: move |_| count += 1,
+                            "➕ Increment"
+                        }
+                        
+                        button {
+                            class: "btn btn-secondary btn-lg",
+                            onclick: move |_| {
+                                let current = count();
+                                if current > 0 {
+                                    count -= 1;
+                                }
+                            },
+                            "➖ Decrement"
+                        }
+                    }
+                    
+                    div {
+                        class: "divider",
+                        "Actions"
                     }
                     
                     button {
-                        class: "bg-white text-blue-500 px-4 py-2 rounded-md font-semibold hover:bg-blue-100 transition-colors",
-                        onclick: move |_| {
-                            let current = count();
-                            if current > 0 {
-                                count -= 1;
-                            }
-                        },
-                        "Decrement"
+                        class: "btn btn-outline btn-error btn-sm",
+                        onclick: move |_| count.set(0),
+                        "🔄 Reset"
                     }
                 }
             }
             
-            footer {
-                class: "mt-8 text-center text-gray-500 text-sm",
-                "Built with Dioxus 0.6 - Deployed on Deno Deploy"
+            div {
+                class: "toast toast-bottom toast-end",
+                
+                div {
+                    class: "alert alert-info",
+                    
+                    span {
+                        class: "text-xs",
+                        "🚀 Built with Dioxus 0.6 + DaisyUI"
+                    }
+                }
             }
         }
     }
