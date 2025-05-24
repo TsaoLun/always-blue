@@ -56,12 +56,14 @@ fn app() -> Element {
                         
                         button {
                             class: "btn btn-primary btn-lg",
+                            style: "touch-action: manipulation;",
                             onclick: move |_| count += 1,
                             "➕ Increment"
                         }
                         
                         button {
                             class: "btn btn-secondary btn-lg",
+                            style: "touch-action: manipulation;",
                             onclick: move |_| {
                                 let current = count();
                                 if current > 0 {
@@ -79,6 +81,7 @@ fn app() -> Element {
                     
                     button {
                         class: "btn btn-outline btn-error btn-sm",
+                        style: "touch-action: manipulation;",
                         onclick: move |_| count.set(0),
                         "🔄 Reset"
                     }
