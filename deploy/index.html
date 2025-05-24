@@ -5,23 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dioxus 0.6 Demodioxus | ⛺</title>
     <meta name="description" content="A Dioxus 0.6 demo application">
-    <!-- Import Tailwind CDN (for production, build Tailwind yourself) -->
+    <!-- Import Tailwind CDN and DaisyUI -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles */
-        body {
-            background-color: #f9fafb;
-            color: #1f2937;
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script>
+        tailwind.config = {
+            plugins: [require("daisyui")],
+            daisyui: {
+                themes: ["light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula"],
+            },
         }
-    </style>
-<link rel="preload" as="script" href="/./assets/always-blue-344913ac5c81d935.js" crossorigin><link rel="preload" as="fetch" type="application/wasm" href="/./assets/always-blue_bg-2b73f60bce96f40c.wasm" crossorigin></head>
+    </script>
+<link rel="preload" as="script" href="/./assets/always-blue-65191212508b1cb0.js" crossorigin><link rel="preload" as="fetch" type="application/wasm" href="/./assets/always-blue_bg-42f720ad5f9ec746.wasm" crossorigin></head>
 <body>
     <div id="main"></div>
 <script>
             // We can't use a module script here because we need to start the script immediately when streaming
-            import("/./assets/always-blue-344913ac5c81d935.js").then(
+            import("/./assets/always-blue-65191212508b1cb0.js").then(
                 ({ default: init }) => {
-                init("/./assets/always-blue_bg-2b73f60bce96f40c.wasm").then((wasm) => {
+                init("/./assets/always-blue_bg-42f720ad5f9ec746.wasm").then((wasm) => {
                     if (wasm.__wbindgen_start == undefined) {
                     wasm.main();
                     }
