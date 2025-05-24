@@ -23,7 +23,7 @@ inherits = "dev"
 
 [dependencies]
 # Dioxus core library
-dioxus = { version = "0.6.1", features = ["web"] }
+dioxus = { version = "0.6.1", features = ["web", "router"] }
 # For web platform features
 dioxus-web = "0.6.1"
 # Serialization and deserialization
@@ -34,3 +34,7 @@ chrono = { version = "0.4", features = ["serde"] }
 # Logging
 log = "0.4"
 console_log = "1.0"
+# Markdown parsing
+pulldown-cmark = "0.11"
+# For URL handling
+url = "2.5"
