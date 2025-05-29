@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use std::sync::Once;
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum Language {
@@ -8,23 +9,6 @@ pub enum Language {
 
 // 使用Dioxus的全局状态管理，初始化为中文
 pub static LANGUAGE: GlobalSignal<Language> = Signal::global(|| Language::Chinese);
-
-impl Language {
-    pub fn from_accept_language(accept_language: &str) -> Self {
-        if accept_language.contains("zh") {
-            Language::Chinese
-        } else {
-            Language::English
-        }
-    }
-    
-    pub fn code(&self) -> &'static str {
-        match self {
-            Language::Chinese => "zh",
-            Language::English => "en",
-        }
-    }
-}
 
 pub struct I18nContext {
     pub language: Language,
@@ -142,7 +126,6 @@ fn get_english_text(key: &str) -> &'static str {
 // Context provider for i18n
 pub fn use_i18n() -> I18nContext {
     // 首次运行时检测浏览器语言并设置全局状态
-    use std::sync::Once;
     static INIT: Once = Once::new();
     INIT.call_once(|| {
         let detected_language = detect_browser_language();
