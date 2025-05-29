@@ -17,12 +17,12 @@ pub fn Blog() -> Element {
                 
                 h1 {
                     class: "text-4xl font-bold mb-4",
-                    "{i18n.t(\"blog.title\")}"
+                    {i18n.t("blog.title")}
                 }
                 
                 p {
                     class: "text-lg text-base-content/70",
-                    "{i18n.t(\"blog.subtitle\")}"
+                    {i18n.t("blog.subtitle")}
                 }
             }
             
@@ -32,7 +32,7 @@ pub fn Blog() -> Element {
                 
                 h2 {
                     class: "text-xl font-bold mb-4",
-                    "{i18n.t(\"blog.filter_by_tag\")}"
+                    {i18n.t("blog.filter_by_tag")}
                 }
                 
                 div {
@@ -102,7 +102,7 @@ pub fn Blog() -> Element {
                                     Link { 
                                         to: Route::BlogPost { slug },
                                         class: "btn btn-sm btn-primary",
-                                        "{i18n.t(\"blog.read_more\")}"
+                                        {i18n.t("blog.read_more")}
                                     }
                                 }
                             }

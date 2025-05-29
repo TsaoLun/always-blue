@@ -25,7 +25,8 @@ pub fn Navbar() -> Element {
                 Link { 
                     to: Route::Blog {},
                     class: "btn btn-ghost",
-                    "📝 {i18n.t(\"nav.blog\")}"
+                    "📝 ",
+                    {i18n.t("nav.blog")}
                 }
                 
                 // 语言切换按钮

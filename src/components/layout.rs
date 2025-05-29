@@ -21,26 +21,26 @@ pub fn Layout(children: Element) -> Element {
                 
                 div {
                     p {
-                        "{i18n.t(\"footer.built_with\")} "
+                        {i18n.t("footer.built_with")} " "
                         a {
                             href: "https://dioxuslabs.com/",
                             target: "_blank", 
                             class: "link link-primary",
                             "Dioxus 0.6"
                         }
-                        " {i18n.t(\"footer.and\")} "
+                        " " {i18n.t("footer.and")} " "
                         a {
                             href: "https://daisyui.com/",
                             target: "_blank", 
                             class: "link link-primary",
                             "DaisyUI"
                         }
-                        " {i18n.t(\"footer.built\")}"
+                        " " {i18n.t("footer.built")}
                     }
                     
                     p {
                         class: "text-sm",
-                        "{i18n.t(\"footer.rights\")}"
+                        {i18n.t("footer.rights")}
                     }
                 }
             }

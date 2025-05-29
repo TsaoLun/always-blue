@@ -18,7 +18,7 @@ pub fn Home() -> Element {
                     
                     h1 { 
                         class: "text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent",
-                        "{i18n.t(\"home.hero.greeting\")}"
+                        {i18n.t("home.hero.greeting")}
                     }
                     
                     div {
@@ -26,18 +26,18 @@ pub fn Home() -> Element {
                         
                         p {
                             class: "mb-4",
-                            "{i18n.t(\"home.hero.intro\")}"
+                            {i18n.t("home.hero.intro")}
                         }
                         
                         p {
                             class: "mb-6",
-                            "{i18n.t(\"home.hero.description\")} "
+                            {i18n.t("home.hero.description")} " "
                             span { class: "badge badge-primary", "Node.js" }
                             if i18n.language == crate::i18n::Language::Chinese { ", " } else { ", " }
                             span { class: "badge badge-secondary", "Go" }
                             if i18n.language == crate::i18n::Language::Chinese { " 和 " } else { " and " }
                             span { class: "badge badge-accent", "Rust" }
-                            " {i18n.t(\"home.hero.experience\")}"
+                            " " {i18n.t("home.hero.experience")}
                         }
                     }
                     
@@ -48,13 +48,13 @@ pub fn Home() -> Element {
                             href: "https://github.com/tsaoLun",
                             target: "_blank",
                             class: "btn btn-primary btn-lg",
-                            "{i18n.t(\"home.hero.github\")}"
+                            {i18n.t("home.hero.github")}
                         }
                         
                         Link { 
                             to: Route::Blog {},
                             class: "btn btn-outline btn-lg",
-                            "{i18n.t(\"home.hero.blog\")}"
+                            {i18n.t("home.hero.blog")}
                         }
                     }
                 }
@@ -70,7 +70,7 @@ pub fn Home() -> Element {
                 
                 h2 {
                     class: "text-3xl font-bold text-center mb-12",
-                    "{i18n.t(\"home.tech.title\")}"
+                    {i18n.t("home.tech.title")}
                 }
                 
                 div {
@@ -95,7 +95,7 @@ pub fn Home() -> Element {
                             
                             p {
                                 class: "text-base-content/70",
-                                "{i18n.t(\"home.tech.nodejs.description\")}"
+                                {i18n.t("home.tech.nodejs.description")}
                             }
                             
                             div {
@@ -126,7 +126,7 @@ pub fn Home() -> Element {
                             
                             p {
                                 class: "text-base-content/70",
-                                "{i18n.t(\"home.tech.go.description\")}"
+                                {i18n.t("home.tech.go.description")}
                             }
                             
                             div {
@@ -157,7 +157,7 @@ pub fn Home() -> Element {
                             
                             p {
                                 class: "text-base-content/70",
-                                "{i18n.t(\"home.tech.rust.description\")}"
+                                {i18n.t("home.tech.rust.description")}
                             }
                             
                             div {
@@ -184,13 +184,13 @@ pub fn Home() -> Element {
                     
                     h2 {
                         class: "text-3xl font-bold",
-                        "{i18n.t(\"home.posts.title\")}"
+                        {i18n.t("home.posts.title")}
                     }
                     
                     Link { 
                         to: Route::Blog {},
                         class: "btn btn-primary",
-                        "{i18n.t(\"home.posts.view_all\")}"
+                        {i18n.t("home.posts.view_all")}
                     }
                 }
                 
@@ -239,7 +239,7 @@ pub fn Home() -> Element {
                                         Link { 
                                             to: Route::BlogPost { slug },
                                             class: "btn btn-sm btn-primary",
-                                            "{i18n.t(\"home.posts.read\")}"
+                                            {i18n.t("home.posts.read")}
                                         }
                                     }
                                 }
