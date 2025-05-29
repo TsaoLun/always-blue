@@ -1,11 +1,13 @@
+use dioxus::prelude::*;
+
 #[derive(Clone, PartialEq, Debug)]
 pub enum Language {
     Chinese,
     English,
 }
 
-// 全局语言状态
-static LANGUAGE: std::sync::atomic::AtomicU8 = std::sync::atomic::AtomicU8::new(0);
+// 使用Dioxus的全局状态管理，初始化为中文
+pub static LANGUAGE: GlobalSignal<Language> = Signal::global(|| Language::Chinese);
 
 impl Language {
     pub fn from_accept_language(accept_language: &str) -> Self {
@@ -21,29 +23,6 @@ impl Language {
             Language::Chinese => "zh",
             Language::English => "en",
         }
-    }
-    
-    pub fn from_u8(value: u8) -> Self {
-        match value {
-            0 => Language::Chinese,
-            1 => Language::English,
-            _ => Language::Chinese,
-        }
-    }
-    
-    pub fn to_u8(&self) -> u8 {
-        match self {
-            Language::Chinese => 0,
-            Language::English => 1,
-        }
-    }
-    
-    pub fn set_global(language: Language) {
-        LANGUAGE.store(language.to_u8(), std::sync::atomic::Ordering::Relaxed);
-    }
-    
-    pub fn get_global() -> Language {
-        Language::from_u8(LANGUAGE.load(std::sync::atomic::Ordering::Relaxed))
     }
 }
 
@@ -163,25 +142,28 @@ fn get_english_text(key: &str) -> &'static str {
 // Context provider for i18n
 pub fn use_i18n() -> I18nContext {
     // 首次运行时检测浏览器语言并设置全局状态
-    static ONCE: std::sync::Once = std::sync::Once::new();
-    ONCE.call_once(|| {
+    use std::sync::Once;
+    static INIT: Once = Once::new();
+    INIT.call_once(|| {
         let detected_language = detect_browser_language();
-        Language::set_global(detected_language);
+        *LANGUAGE.write() = detected_language;
     });
     
-    let language = Language::get_global();
+    let language = LANGUAGE.read().clone();
     I18nContext::new(language)
 }
 
-// 切换语言的辅助函数
+// 切换语言函数
 pub fn toggle_language() {
-    let current = Language::get_global();
+    let current = LANGUAGE.read().clone();
     let new_language = match current {
         Language::Chinese => Language::English,
         Language::English => Language::Chinese,
     };
-    Language::set_global(new_language);
+    *LANGUAGE.write() = new_language;
 }
+
+// 删除注释掉的代码
 
 // 检测浏览器语言的辅助函数
 fn detect_browser_language() -> Language {

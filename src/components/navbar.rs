@@ -34,17 +34,6 @@ pub fn Navbar() -> Element {
                     class: "btn btn-ghost",
                     onclick: move |_| {
                         toggle_language();
-                        // 使用简单的页面重新加载来刷新状态
-                        #[cfg(target_arch = "wasm32")]
-                        {
-                            use wasm_bindgen::prelude::*;
-                            #[wasm_bindgen]
-                            extern "C" {
-                                #[wasm_bindgen(js_namespace = ["window", "location"])]
-                                fn reload();
-                            }
-                            reload();
-                        }
                     },
                     if i18n.language == Language::Chinese { "🌐 EN" } else { "🌐 中文" }
                 }
