@@ -38,3 +38,14 @@ console_log = "1.0"
 pulldown-cmark = "0.11"
 # For URL handling
 url = "2.5"
+# For WASM bindings
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+  "Window",
+  "Navigator",
+]

@@ -3,6 +3,7 @@ use dioxus::prelude::*;
 mod blog;
 mod components;
 mod pages;
+mod i18n;
 
 use components::*;
 use pages::{Home as HomePage, Blog as BlogPage, BlogPost as BlogPostPage, BlogTag as BlogTagPage};

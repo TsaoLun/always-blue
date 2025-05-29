@@ -1,8 +1,10 @@
 use dioxus::prelude::*;
-use crate::{Route, blog::get_all_posts};
+use crate::{Route, blog::get_all_posts, i18n::use_i18n};
 
 #[component]
 pub fn Home() -> Element {
+    let i18n = use_i18n();
+    
     rsx! {
         // Hero Section
         section {
@@ -16,7 +18,7 @@ pub fn Home() -> Element {
                     
                     h1 { 
                         class: "text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent",
-                        "👋 你好，我是 TsaoLun"
+                        "{i18n.t(\"home.hero.greeting\")}"
                     }
                     
                     div {
@@ -24,18 +26,18 @@ pub fn Home() -> Element {
                         
                         p {
                             class: "mb-4",
-                            "🧑‍💻 全栈开发者 • 📍 深圳"
+                            "{i18n.t(\"home.hero.intro\")}"
                         }
                         
                         p {
                             class: "mb-6",
-                            "专注于现代 Web 开发技术，拥有 "
+                            "{i18n.t(\"home.hero.description\")} "
                             span { class: "badge badge-primary", "Node.js" }
-                            "、"
+                            if i18n.language == crate::i18n::Language::Chinese { ", " } else { ", " }
                             span { class: "badge badge-secondary", "Go" }
-                            " 和 "
+                            if i18n.language == crate::i18n::Language::Chinese { " 和 " } else { " and " }
                             span { class: "badge badge-accent", "Rust" }
-                            " 开发经验"
+                            " {i18n.t(\"home.hero.experience\")}"
                         }
                     }
                     
@@ -46,13 +48,13 @@ pub fn Home() -> Element {
                             href: "https://github.com/tsaoLun",
                             target: "_blank",
                             class: "btn btn-primary btn-lg",
-                            "🔗 GitHub 主页"
+                            "{i18n.t(\"home.hero.github\")}"
                         }
                         
                         Link { 
                             to: Route::Blog {},
                             class: "btn btn-outline btn-lg",
-                            "📖 阅读博客"
+                            "{i18n.t(\"home.hero.blog\")}"
                         }
                     }
                 }
@@ -68,7 +70,7 @@ pub fn Home() -> Element {
                 
                 h2 {
                     class: "text-3xl font-bold text-center mb-12",
-                    "🛠️ 技术栈"
+                    "{i18n.t(\"home.tech.title\")}"
                 }
                 
                 div {
@@ -93,7 +95,7 @@ pub fn Home() -> Element {
                             
                             p {
                                 class: "text-base-content/70",
-                                "专注于后端 API 开发、微服务架构和实时应用。熟练使用 Express、Koa、Fastify 等框架。"
+                                "{i18n.t(\"home.tech.nodejs.description\")}"
                             }
                             
                             div {
@@ -124,7 +126,7 @@ pub fn Home() -> Element {
                             
                             p {
                                 class: "text-base-content/70",
-                                "构建高性能的分布式系统和微服务。擅长并发编程和系统设计。"
+                                "{i18n.t(\"home.tech.go.description\")}"
                             }
                             
                             div {
@@ -155,7 +157,7 @@ pub fn Home() -> Element {
                             
                             p {
                                 class: "text-base-content/70",
-                                "探索系统编程和 WebAssembly。使用 Actix、Dioxus 等现代框架开发高性能应用。"
+                                "{i18n.t(\"home.tech.rust.description\")}"
                             }
                             
                             div {
@@ -182,13 +184,13 @@ pub fn Home() -> Element {
                     
                     h2 {
                         class: "text-3xl font-bold",
-                        "📝 最新文章"
+                        "{i18n.t(\"home.posts.title\")}"
                     }
                     
                     Link { 
                         to: Route::Blog {},
                         class: "btn btn-primary",
-                        "查看全部"
+                        "{i18n.t(\"home.posts.view_all\")}"
                     }
                 }
                 
@@ -237,7 +239,7 @@ pub fn Home() -> Element {
                                         Link { 
                                             to: Route::BlogPost { slug },
                                             class: "btn btn-sm btn-primary",
-                                            "阅读"
+                                            "{i18n.t(\"home.posts.read\")}"
                                         }
                                     }
                                 }

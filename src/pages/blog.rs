@@ -1,8 +1,9 @@
 use dioxus::prelude::*;
-use crate::{Route, blog::{get_all_posts, get_all_tags}};
+use crate::{Route, blog::{get_all_posts, get_all_tags}, i18n::use_i18n};
 
 #[component]
 pub fn Blog() -> Element {
+    let i18n = use_i18n();
     let posts = get_all_posts();
     let tags = get_all_tags();
     
@@ -16,12 +17,12 @@ pub fn Blog() -> Element {
                 
                 h1 {
                     class: "text-4xl font-bold mb-4",
-                    "📝 技术博客"
+                    "{i18n.t(\"blog.title\")}"
                 }
                 
                 p {
                     class: "text-lg text-base-content/70",
-                    "分享技术经验、学习心得和项目实践"
+                    "{i18n.t(\"blog.subtitle\")}"
                 }
             }
             
@@ -31,7 +32,7 @@ pub fn Blog() -> Element {
                 
                 h2 {
                     class: "text-xl font-bold mb-4",
-                    "🏷️ 标签分类"
+                    "{i18n.t(\"blog.filter_by_tag\")}"
                 }
                 
                 div {
@@ -101,7 +102,7 @@ pub fn Blog() -> Element {
                                     Link { 
                                         to: Route::BlogPost { slug },
                                         class: "btn btn-sm btn-primary",
-                                        "阅读全文"
+                                        "{i18n.t(\"blog.read_more\")}"
                                     }
                                 }
                             }

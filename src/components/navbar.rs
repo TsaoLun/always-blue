@@ -1,8 +1,10 @@
 use dioxus::prelude::*;
-use crate::Route;
+use crate::{Route, i18n::{use_i18n, toggle_language, Language}};
 
 #[component]
 pub fn Navbar() -> Element {
+    let i18n = use_i18n();
+    
     rsx! {
         nav {
             class: "navbar bg-base-100 shadow-lg",
@@ -23,7 +25,27 @@ pub fn Navbar() -> Element {
                 Link { 
                     to: Route::Blog {},
                     class: "btn btn-ghost",
-                    "📝 博客"
+                    "📝 {i18n.t(\"nav.blog\")}"
+                }
+                
+                // 语言切换按钮
+                button {
+                    class: "btn btn-ghost",
+                    onclick: move |_| {
+                        toggle_language();
+                        // 使用简单的页面重新加载来刷新状态
+                        #[cfg(target_arch = "wasm32")]
+                        {
+                            use wasm_bindgen::prelude::*;
+                            #[wasm_bindgen]
+                            extern "C" {
+                                #[wasm_bindgen(js_namespace = ["window", "location"])]
+                                fn reload();
+                            }
+                            reload();
+                        }
+                    },
+                    if i18n.language == Language::Chinese { "🌐 EN" } else { "🌐 中文" }
                 }
                 
                 a {
