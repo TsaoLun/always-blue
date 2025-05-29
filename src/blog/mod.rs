@@ -96,42 +96,43 @@ impl BlogPost {
     }
 }
 
-// Mock data for now (in a real app, you'd read from files)
+// Load and parse blog posts from markdown files
 pub fn get_all_posts() -> Vec<BlogPost> {
-    vec![
-        BlogPost {
-            slug: "welcome".to_string(),
-            title: "欢迎来到我的博客".to_string(),
-            date: "2024-01-30".to_string(),
-            tags: vec!["介绍".to_string(), "博客".to_string()],
-            summary: "博客的第一篇文章，介绍博客的目标和内容".to_string(),
-            content: include_str!("posts/01-welcome.md").to_string(),
-        },
-        BlogPost {
-            slug: "nodejs-optimization".to_string(),
-            title: "Node.js 性能优化实战".to_string(),
-            date: "2024-01-30".to_string(),
-            tags: vec!["Node.js".to_string(), "性能优化".to_string(), "实战".to_string()],
-            summary: "Node.js 应用性能优化的实用技巧和工具".to_string(),
-            content: include_str!("posts/04-nodejs-optimization.md").to_string(),
-        },
-        BlogPost {
-            slug: "go-concurrency".to_string(),
-            title: "Go 并发编程最佳实践".to_string(),
-            date: "2024-01-25".to_string(),
-            tags: vec!["Go".to_string(), "并发编程".to_string(), "最佳实践".to_string()],
-            summary: "分享 Go 语言并发编程的最佳实践和常见陷阱".to_string(),
-            content: include_str!("posts/03-go-concurrency.md").to_string(),
-        },
-        BlogPost {
-            slug: "rust-web".to_string(),
-            title: "Rust 在 Web 开发中的应用".to_string(),
-            date: "2024-01-20".to_string(),
-            tags: vec!["Rust".to_string(), "Web开发".to_string(), "技术分享".to_string()],
-            summary: "探讨 Rust 在现代 Web 开发中的优势和应用场景".to_string(),
-            content: include_str!("posts/02-rust-web.md").to_string(),
-        },
-    ]
+    let mut posts = Vec::new();
+    
+    // Parse each markdown file
+    if let Ok(post) = BlogPost::parse_from_markdown(
+        include_str!("posts/01-welcome.md"), 
+        "welcome".to_string()
+    ) {
+        posts.push(post);
+    }
+    
+    if let Ok(post) = BlogPost::parse_from_markdown(
+        include_str!("posts/02-rust-web.md"), 
+        "rust-web".to_string()
+    ) {
+        posts.push(post);
+    }
+    
+    if let Ok(post) = BlogPost::parse_from_markdown(
+        include_str!("posts/03-go-concurrency.md"), 
+        "go-concurrency".to_string()
+    ) {
+        posts.push(post);
+    }
+    
+    if let Ok(post) = BlogPost::parse_from_markdown(
+        include_str!("posts/04-nodejs-optimization.md"), 
+        "nodejs-optimization".to_string()
+    ) {
+        posts.push(post);
+    }
+    
+    // Sort by date (newest first)
+    posts.sort_by(|a, b| b.date.cmp(&a.date));
+    
+    posts
 }
 
 pub fn get_post_by_slug(slug: &str) -> Option<BlogPost> {
