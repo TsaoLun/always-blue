@@ -8,52 +8,52 @@ pub fn Home() -> Element {
     rsx! {
         // Hero Section
         section {
-            class: "hero min-h-[80vh] bg-gradient-to-br from-primary/20 to-secondary/20",
+            class: "hero min-h-[70vh] sm:min-h-[80vh] bg-gradient-to-br from-primary/20 to-secondary/20",
             
             div {
-                class: "hero-content text-center",
+                class: "hero-content text-center px-4",
                 
                 div {
                     class: "max-w-4xl",
                     
                     h1 { 
-                        class: "text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent",
+                        class: "text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent",
                         {i18n.t("home.hero.greeting")}
                     }
                     
                     div {
-                        class: "text-xl mb-8 leading-relaxed",
+                        class: "text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 leading-relaxed",
                         
                         p {
-                            class: "mb-4",
+                            class: "mb-3 sm:mb-4",
                             {i18n.t("home.hero.intro")}
                         }
                         
                         p {
-                            class: "mb-6",
+                            class: "mb-4 sm:mb-6",
                             {i18n.t("home.hero.description")} " "
-                            span { class: "badge badge-primary", "Node.js" }
+                            span { class: "badge badge-primary text-xs sm:text-sm", "Node.js" }
                             if i18n.language == crate::i18n::Language::Chinese { ", " } else { ", " }
-                            span { class: "badge badge-secondary", "Go" }
+                            span { class: "badge badge-secondary text-xs sm:text-sm", "Go" }
                             if i18n.language == crate::i18n::Language::Chinese { " 和 " } else { " and " }
-                            span { class: "badge badge-accent", "Rust" }
+                            span { class: "badge badge-accent text-xs sm:text-sm", "Rust" }
                             " " {i18n.t("home.hero.experience")}
                         }
                     }
                     
                     div {
-                        class: "flex flex-wrap justify-center gap-4 mb-8",
+                        class: "flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-8",
                         
                         a {
                             href: "https://github.com/tsaoLun",
                             target: "_blank",
-                            class: "btn btn-primary btn-lg",
+                            class: "btn btn-primary btn-sm sm:btn-lg active:scale-95 transition-transform",
                             {i18n.t("home.hero.github")}
                         }
                         
                         Link { 
                             to: Route::Blog {},
-                            class: "btn btn-outline btn-lg",
+                            class: "btn btn-outline btn-sm sm:btn-lg active:scale-95 transition-transform",
                             {i18n.t("home.hero.blog")}
                         }
                     }
@@ -63,46 +63,46 @@ pub fn Home() -> Element {
         
         // Tech Stack Section
         section {
-            class: "py-20 px-4",
+            class: "py-12 sm:py-20 px-4",
             
             div {
                 class: "container mx-auto max-w-6xl",
                 
                 h2 {
-                    class: "text-3xl font-bold text-center mb-12",
+                    class: "text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12",
                     {i18n.t("home.tech.title")}
                 }
                 
                 div {
-                    class: "grid md:grid-cols-3 gap-8",
+                    class: "grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8",
                     
                     // Node.js Card
                     div {
-                        class: "card bg-base-100 shadow-xl",
+                        class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 active:scale-[0.98]",
                         
                         div {
-                            class: "card-body items-center text-center",
+                            class: "card-body items-center text-center p-4 sm:p-8",
                             
                             div {
-                                class: "text-6xl mb-4",
+                                class: "text-4xl sm:text-6xl mb-3 sm:mb-4",
                                 "🟢"
                             }
                             
                             h3 {
-                                class: "card-title text-2xl mb-4",
+                                class: "card-title text-xl sm:text-2xl mb-3 sm:mb-4",
                                 "Node.js"
                             }
                             
                             p {
-                                class: "text-base-content/70",
+                                class: "text-sm sm:text-base text-base-content/70 mb-3 sm:mb-4",
                                 {i18n.t("home.tech.nodejs.description")}
                             }
                             
                             div {
-                                class: "flex flex-wrap gap-2 mt-4",
-                                span { class: "badge badge-outline", "Express" }
-                                span { class: "badge badge-outline", "Fastify" }
-                                span { class: "badge badge-outline", "TypeScript" }
+                                class: "flex flex-wrap gap-1 sm:gap-2 justify-center",
+                                span { class: "badge badge-outline text-xs", "Express" }
+                                span { class: "badge badge-outline text-xs", "Fastify" }
+                                span { class: "badge badge-outline text-xs", "TypeScript" }
                             }
                         }
                     }

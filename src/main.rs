@@ -10,11 +10,39 @@ use pages::{Home as HomePage, Blog as BlogPage, BlogPost as BlogPostPage, BlogTa
 
 fn main() {
     // Initialize logger
-    console_log::init_with_level(log::Level::Debug)
-        .expect("Failed to initialize logger");
+    #[cfg(target_arch = "wasm32")]
+    {
+        console_log::init_with_level(log::Level::Debug)
+            .expect("Failed to initialize logger");
+    }
     
-    // Launch web application
-    launch(app);
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        env_logger::Builder::from_default_env()
+            .filter_level(log::LevelFilter::Debug)
+            .init();
+    }
+    
+    // Launch application with appropriate configuration
+    #[cfg(target_arch = "wasm32")]
+    {
+        dioxus::launch(app);
+    }
+    
+    #[cfg(target_os = "ios")]
+    {
+        dioxus::launch(app);
+    }
+    
+    #[cfg(target_os = "android")]
+    {
+        dioxus::launch(app);
+    }
+    
+    #[cfg(not(any(target_arch = "wasm32", target_os = "ios", target_os = "android")))]
+    {
+        dioxus::launch(app);
+    }
 }
 
 #[derive(Clone, Routable, Debug, PartialEq)]

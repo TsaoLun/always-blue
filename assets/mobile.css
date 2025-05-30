@@ -1,0 +1,78 @@
+/* Mobile-specific styles for Always Blue */
+
+/* Touch targets should be at least 44px */
+.btn, .badge, .breadcrumb a {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Improve touch response */
+.btn:active, .card:active, .badge:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Better text readability on mobile */
+@media (max-width: 640px) {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Prevent horizontal overflow */
+  .breadcrumbs {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  /* Better spacing for mobile */
+  .card-body {
+    padding: 1rem;
+  }
+  
+  /* Responsive typography */
+  .card-title {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+}
+
+/* iOS specific styles */
+@supports (-webkit-touch-callout: none) {
+  /* Remove iOS input zoom */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  /* Better iOS scroll behavior */
+  .container {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* iOS safe area support */
+  .container {
+    padding-left: max(env(safe-area-inset-left), 1rem);
+    padding-right: max(env(safe-area-inset-right), 1rem);
+    padding-top: max(env(safe-area-inset-top), 1rem);
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}

@@ -12,9 +12,9 @@ if ! command -v dx &> /dev/null; then
     cargo install dioxus-cli
 fi
 
-# Build the project
-echo "Building project..."
-dx build --release
+# Build the project for web platform
+echo "Building project for web..."
+dx build --platform web --release
 
 echo "===== Preparing Deno Deploy files ====="
 
