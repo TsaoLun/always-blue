@@ -78,7 +78,8 @@ async function handleRequest(req: Request): Promise<Response> {
   console.log(`Request: ${path}`);
   
   // If requesting root directory or path without extension and not an API path, serve index.html
-  if (path === "/" || (!path.includes(".") && !path.startsWith("/api/"))) {
+  const hasFileExtension = path.includes(".") && path.lastIndexOf(".") > path.lastIndexOf("/");
+  if (path === "/" || (!hasFileExtension && !path.startsWith("/api/"))) {
     path = "/index.html";
   }
   
