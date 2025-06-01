@@ -1,0 +1,68 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .pixel { fill: #4ECDC4; }
+    .pixel-dark { fill: #3A9B95; }
+    .pixel-light { fill: #7EDDD6; }
+    .pixel-eye { fill: #000000; }
+    .pixel-shell { fill: #F39C12; }
+    .pixel-shell-dark { fill: #D68910; }
+  </style>
+  
+  <!-- Crab shell -->
+  <rect x="40" y="48" width="8" height="8" class="pixel-shell"/>
+  <rect x="48" y="40" width="8" height="8" class="pixel-shell"/>
+  <rect x="56" y="32" width="8" height="8" class="pixel-shell"/>
+  <rect x="64" y="32" width="8" height="8" class="pixel-shell"/>
+  <rect x="72" y="40" width="8" height="8" class="pixel-shell"/>
+  <rect x="80" y="48" width="8" height="8" class="pixel-shell"/>
+  <rect x="80" y="56" width="8" height="8" class="pixel-shell"/>
+  <rect x="72" y="64" width="8" height="8" class="pixel-shell"/>
+  <rect x="64" y="64" width="8" height="8" class="pixel-shell"/>
+  <rect x="56" y="64" width="8" height="8" class="pixel-shell"/>
+  <rect x="48" y="64" width="8" height="8" class="pixel-shell"/>
+  <rect x="40" y="56" width="8" height="8" class="pixel-shell"/>
+  
+  <!-- Fill shell -->
+  <rect x="48" y="48" width="8" height="8" class="pixel-shell"/>
+  <rect x="56" y="40" width="8" height="8" class="pixel-shell"/>
+  <rect x="64" y="40" width="8" height="8" class="pixel-shell"/>
+  <rect x="72" y="48" width="8" height="8" class="pixel-shell"/>
+  <rect x="72" y="56" width="8" height="8" class="pixel-shell"/>
+  <rect x="64" y="56" width="8" height="8" class="pixel-shell"/>
+  <rect x="56" y="56" width="8" height="8" class="pixel-shell"/>
+  <rect x="48" y="56" width="8" height="8" class="pixel-shell"/>
+  <rect x="56" y="48" width="8" height="8" class="pixel-shell"/>
+  <rect x="64" y="48" width="8" height="8" class="pixel-shell"/>
+  
+  <!-- Eyes -->
+  <rect x="48" y="32" width="8" height="8" class="pixel-eye"/>
+  <rect x="72" y="32" width="8" height="8" class="pixel-eye"/>
+  
+  <!-- Claws -->
+  <rect x="24" y="40" width="8" height="8" class="pixel"/>
+  <rect x="32" y="32" width="8" height="8" class="pixel"/>
+  <rect x="32" y="48" width="8" height="8" class="pixel"/>
+  <rect x="16" y="32" width="8" height="8" class="pixel"/>
+  <rect x="16" y="48" width="8" height="8" class="pixel"/>
+  
+  <rect x="96" y="40" width="8" height="8" class="pixel"/>
+  <rect x="88" y="32" width="8" height="8" class="pixel"/>
+  <rect x="88" y="48" width="8" height="8" class="pixel"/>
+  <rect x="104" y="32" width="8" height="8" class="pixel"/>
+  <rect x="104" y="48" width="8" height="8" class="pixel"/>
+  
+  <!-- Legs -->
+  <rect x="32" y="72" width="8" height="8" class="pixel"/>
+  <rect x="48" y="72" width="8" height="8" class="pixel"/>
+  <rect x="56" y="72" width="8" height="8" class="pixel"/>
+  <rect x="64" y="72" width="8" height="8" class="pixel"/>
+  <rect x="72" y="72" width="8" height="8" class="pixel"/>
+  <rect x="88" y="72" width="8" height="8" class="pixel"/>
+  
+  <rect x="24" y="80" width="8" height="8" class="pixel"/>
+  <rect x="40" y="80" width="8" height="8" class="pixel"/>
+  <rect x="56" y="80" width="8" height="8" class="pixel"/>
+  <rect x="64" y="80" width="8" height="8" class="pixel"/>
+  <rect x="80" y="80" width="8" height="8" class="pixel"/>
+  <rect x="96" y="80" width="8" height="8" class="pixel"/>
+</svg>

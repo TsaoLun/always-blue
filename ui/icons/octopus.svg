@@ -1,0 +1,80 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .pixel { fill: #FF6B9D; }
+    .pixel-dark { fill: #D84A7A; }
+    .pixel-light { fill: #FF8FB3; }
+    .pixel-eye { fill: #000000; }
+    .pixel-tentacle { fill: #E85A8A; }
+  </style>
+  
+  <!-- Octopus head/body -->
+  <rect x="40" y="32" width="8" height="8" class="pixel"/>
+  <rect x="48" y="24" width="8" height="8" class="pixel"/>
+  <rect x="56" y="24" width="8" height="8" class="pixel"/>
+  <rect x="64" y="24" width="8" height="8" class="pixel"/>
+  <rect x="72" y="24" width="8" height="8" class="pixel"/>
+  <rect x="80" y="32" width="8" height="8" class="pixel"/>
+  <rect x="88" y="40" width="8" height="8" class="pixel"/>
+  <rect x="88" y="48" width="8" height="8" class="pixel"/>
+  <rect x="88" y="56" width="8" height="8" class="pixel"/>
+  <rect x="80" y="64" width="8" height="8" class="pixel"/>
+  <rect x="72" y="64" width="8" height="8" class="pixel"/>
+  <rect x="64" y="64" width="8" height="8" class="pixel"/>
+  <rect x="56" y="64" width="8" height="8" class="pixel"/>
+  <rect x="48" y="64" width="8" height="8" class="pixel"/>
+  <rect x="40" y="64" width="8" height="8" class="pixel"/>
+  <rect x="32" y="56" width="8" height="8" class="pixel"/>
+  <rect x="32" y="48" width="8" height="8" class="pixel"/>
+  <rect x="32" y="40" width="8" height="8" class="pixel"/>
+  
+  <!-- Fill body -->
+  <rect x="40" y="40" width="8" height="8" class="pixel"/>
+  <rect x="48" y="32" width="8" height="8" class="pixel"/>
+  <rect x="56" y="32" width="8" height="8" class="pixel"/>
+  <rect x="64" y="32" width="8" height="8" class="pixel"/>
+  <rect x="72" y="32" width="8" height="8" class="pixel"/>
+  <rect x="80" y="40" width="8" height="8" class="pixel"/>
+  <rect x="80" y="48" width="8" height="8" class="pixel"/>
+  <rect x="80" y="56" width="8" height="8" class="pixel"/>
+  <rect x="72" y="56" width="8" height="8" class="pixel"/>
+  <rect x="64" y="56" width="8" height="8" class="pixel"/>
+  <rect x="56" y="56" width="8" height="8" class="pixel"/>
+  <rect x="48" y="56" width="8" height="8" class="pixel"/>
+  <rect x="40" y="56" width="8" height="8" class="pixel"/>
+  <rect x="40" y="48" width="8" height="8" class="pixel"/>
+  <rect x="48" y="40" width="8" height="8" class="pixel"/>
+  <rect x="56" y="40" width="8" height="8" class="pixel"/>
+  <rect x="64" y="40" width="8" height="8" class="pixel"/>
+  <rect x="72" y="40" width="8" height="8" class="pixel"/>
+  <rect x="48" y="48" width="8" height="8" class="pixel"/>
+  <rect x="56" y="48" width="8" height="8" class="pixel"/>
+  <rect x="64" y="48" width="8" height="8" class="pixel"/>
+  <rect x="72" y="48" width="8" height="8" class="pixel"/>
+  
+  <!-- Eyes -->
+  <rect x="56" y="40" width="8" height="8" class="pixel-eye"/>
+  <rect x="64" y="40" width="8" height="8" class="pixel-eye"/>
+  
+  <!-- Tentacles -->
+  <rect x="40" y="72" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="48" y="72" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="56" y="72" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="64" y="72" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="72" y="72" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="80" y="72" width="8" height="8" class="pixel-tentacle"/>
+  
+  <rect x="32" y="80" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="48" y="80" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="56" y="80" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="64" y="80" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="72" y="80" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="88" y="80" width="8" height="8" class="pixel-tentacle"/>
+  
+  <rect x="40" y="88" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="56" y="88" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="64" y="88" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="80" y="88" width="8" height="8" class="pixel-tentacle"/>
+  
+  <rect x="48" y="96" width="8" height="8" class="pixel-tentacle"/>
+  <rect x="72" y="96" width="8" height="8" class="pixel-tentacle"/>
+</svg>
