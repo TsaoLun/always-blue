@@ -6,16 +6,15 @@
         ".git",
         ".github",
         "node_modules",
-        "target/debug",
-        "target/release",
-        "src"
-      ],
-      "include": [
-        "deno_deploy.ts",
-        "deno.json",
-        "../index.html",
-        "../pkg/**/*",
-        "../assets/**/*"
+        "target",
+        "src",
+        ".gitignore",
+        "README.md",
+        "Cargo.toml",
+        "Cargo.lock",
+        "build.rs",
+        "build-and-deploy.sh",
+        "prepare-deploy.sh"
       ]
     }
   }

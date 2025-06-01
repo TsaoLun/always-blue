@@ -45,8 +45,11 @@ async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Ui
   // Clean up path - remove any "/./", normalize slashes
   const cleanPath = path.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
   
-  // Determine the base directory - go up one level from deploy/ to project root
-  const baseDir = "..";
+  // Determine the base directory based on deployment environment
+  // In Deno Deploy, files are copied to the same directory as the server
+  // In development, we need to go up one level to access project files
+  const baseDir = isDev ? ".." : ".";
+  
   // Remove leading ./ from cleanPath to avoid double dot
   const normalizedPath = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
   // Ensure the path starts with / for proper joining
