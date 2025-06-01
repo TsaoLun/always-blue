@@ -6,12 +6,16 @@
         ".git",
         ".github",
         "node_modules",
-        "target",
+        "target/debug",
+        "target/release",
         "src"
       ],
       "include": [
         "deno_deploy.ts",
-        "deno.json"
+        "deno.json",
+        "../index.html",
+        "../pkg/**/*",
+        "../assets/**/*"
       ]
     }
   }

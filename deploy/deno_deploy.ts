@@ -5,10 +5,12 @@
 const contentTypeMap: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8", // ES modules
   ".css": "text/css; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
   ".gif": "image/gif",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
@@ -19,6 +21,11 @@ const contentTypeMap: Record<string, string> = {
   ".otf": "font/otf",
   ".woff": "font/woff",
   ".woff2": "font/woff2",
+  ".webp": "image/webp",
+  ".avif": "image/avif",
+  ".xml": "application/xml; charset=utf-8",
+  ".txt": "text/plain; charset=utf-8",
+  ".md": "text/markdown; charset=utf-8",
 };
 
 // Get content type based on file path
@@ -29,28 +36,35 @@ function getContentType(path: string): string {
 
 // Load file based on path, supporting compressed versions
 async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Uint8Array | null; compression?: string }> {
-  // Debug log to see what path is being requested
-  console.log(`Attempting to load file: ${path}`);
+  // Debug log to see what path is being requested (only in development)
+  const isDev = Deno.env.get("DENO_DEPLOYMENT_ID") === undefined;
+  if (isDev) {
+    console.log(`Attempting to load file: ${path}`);
+  }
   
   // Clean up path - remove any "/./", normalize slashes
   const cleanPath = path.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
   
-  // Determine the base directory - when running from project root, use deploy/ subdirectory
-  const baseDir = ".";
+  // Determine the base directory - go up one level from deploy/ to project root
+  const baseDir = "..";
   // Remove leading ./ from cleanPath to avoid double dot
   const normalizedPath = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
   // Ensure the path starts with / for proper joining
   const finalPath = normalizedPath.startsWith("/") ? normalizedPath : `/${normalizedPath}`;
   const fullPath = `${baseDir}${finalPath}`;
   
-  console.log(`Resolved file path: ${fullPath}`);
+  if (isDev) {
+    console.log(`Resolved file path: ${fullPath}`);
+  }
   
   // If client supports Brotli compression, try loading the .br file first
   if (acceptsBrotli) {
     try {
       const brotliFile = await Deno.readFile(`${fullPath}.br`);
       if (brotliFile) {
-        console.log(`Successfully loaded Brotli file: ${fullPath}.br`);
+        if (isDev) {
+          console.log(`Successfully loaded Brotli file: ${fullPath}.br`);
+        }
         return { file: brotliFile, compression: "br" };
       }
     } catch (_) {
@@ -61,11 +75,15 @@ async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Ui
   // Try to load the original file
   try {
     const file = await Deno.readFile(fullPath);
-    console.log(`Successfully loaded file: ${fullPath}`);
+    if (isDev) {
+      console.log(`Successfully loaded file: ${fullPath}`);
+    }
     return { file };
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    console.log(`Failed to load file ${fullPath}: ${errorMessage}`);
+    if (isDev) {
+      console.log(`Failed to load file ${fullPath}: ${errorMessage}`);
+    }
     return { file: null };
   }
 }
@@ -75,7 +93,10 @@ async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
   let path = url.pathname;
   
-  console.log(`Request: ${path}`);
+  const isDev = Deno.env.get("DENO_DEPLOYMENT_ID") === undefined;
+  if (isDev) {
+    console.log(`Request: ${path}`);
+  }
   
   // If requesting root directory or path without extension and not an API path, serve index.html
   const hasFileExtension = path.includes(".") && path.lastIndexOf(".") > path.lastIndexOf("/");
