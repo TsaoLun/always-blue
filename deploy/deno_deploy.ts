@@ -36,7 +36,7 @@ async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Ui
   const cleanPath = path.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
   
   // Determine the base directory - when running from project root, use deploy/ subdirectory
-  const baseDir = ".";
+  const baseDir = "../";
   // Remove leading ./ from cleanPath to avoid double dot
   const normalizedPath = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
   // Ensure the path starts with / for proper joining
