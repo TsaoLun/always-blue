@@ -1,100 +1,52 @@
-use dioxus::prelude::*;
+slint::include_modules!();
 
-mod blog;
-mod components;
-mod pages;
-mod i18n;
-
-use components::*;
-use pages::{Home as HomePage, Blog as BlogPage, BlogPost as BlogPostPage, BlogTag as BlogTagPage};
-
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen(start))]
 fn main() {
-    // Initialize logger
-    #[cfg(target_arch = "wasm32")]
-    {
-        console_log::init_with_level(log::Level::Debug)
-            .expect("Failed to initialize logger");
-    }
-    
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        env_logger::Builder::from_default_env()
-            .filter_level(log::LevelFilter::Debug)
-            .init();
-    }
-    
-    // Launch application with appropriate configuration
-    #[cfg(target_arch = "wasm32")]
-    {
-        dioxus::launch(app);
-    }
-    
-    #[cfg(target_os = "ios")]
-    {
-        dioxus::launch(app);
-    }
-    
-    #[cfg(target_os = "android")]
-    {
-        dioxus::launch(app);
-    }
-    
-    #[cfg(not(any(target_arch = "wasm32", target_os = "ios", target_os = "android")))]
-    {
-        dioxus::launch(app);
-    }
-}
+    use slint::Model;
 
-#[derive(Clone, Routable, Debug, PartialEq)]
-enum Route {
-    #[route("/")]
-    Home {},
-    #[route("/blog")]
-    Blog {},
-    #[route("/blog/post/:slug")]
-    BlogPost { slug: String },
-    #[route("/blog/tag/:tag")]
-    BlogTag { tag: String },
-}
+    let main_window = MainWindow::new().unwrap();
+    let mut tiles: Vec<TileData> = main_window.get_memory_tiles().iter().collect();
+    tiles.extend(tiles.clone());
 
-fn app() -> Element {
-    rsx! {
-        Router::<Route> {}
-    }
-}
+    use rand::seq::SliceRandom;
+    let mut rng = rand::thread_rng();
+    tiles.shuffle(&mut rng);
+    let tiles_model = std::rc::Rc::new(slint::VecModel::from(tiles));
+    main_window.set_memory_tiles(tiles_model.clone().into());
 
-#[component]
-fn Home() -> Element {
-    rsx! {
-        Layout {
-            HomePage {}
+    let main_window_weak = main_window.as_weak();
+    main_window.on_check_if_pair_solved(move || {
+        let mut flipped_tiles =
+            tiles_model
+                .iter()
+                .enumerate()
+                .filter(|(_, tile)| tile.image_visible && !tile.solved);
+
+        if let (Some((t1_idx, mut t1)), Some((t2_idx, mut t2))) = 
+            (flipped_tiles.next(), flipped_tiles.next())
+            {
+                let is_pair_solved = t1 == t2;
+                if is_pair_solved {
+                    t1.solved = true;
+                    t2.solved = true;
+                    tiles_model.set_row_data(t1_idx, t1);
+                    tiles_model.set_row_data(t2_idx, t2);
+                } else {
+                    // Reset the tiles after a short delay
+                    let main_window = main_window_weak.unwrap();
+                    main_window.set_disable_tiles(true);
+                    let tiles_model = tiles_model.clone();
+                    slint::Timer::single_shot(std::time::Duration::from_secs(1), move|| {
+                        main_window.set_disable_tiles(false);
+                        t1.image_visible = false;
+                        t2.image_visible = false;
+                        tiles_model.set_row_data(t1_idx, t1);
+                        tiles_model.set_row_data(t2_idx, t2);
+                    });
+                }
+            }
         }
-    }
-}
+    );
 
-#[component]
-fn Blog() -> Element {
-    rsx! {
-        Layout {
-            BlogPage {}
-        }
-    }
-}
-
-#[component]
-fn BlogPost(slug: String) -> Element {
-    rsx! {
-        Layout {
-            BlogPostPage { slug }
-        }
-    }
-}
-
-#[component] 
-fn BlogTag(tag: String) -> Element {
-    rsx! {
-        Layout {
-            BlogTagPage { tag }
-        }
-    }
+    main_window.run().unwrap();
 }

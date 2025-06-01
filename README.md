@@ -1,102 +1,38 @@
-# Dioxus 0.6 Web Demo
+# Slint Rust Template
 
-This is a simple web application demo built with Dioxus 0.6, deployable to Deno Deploy.
+A template for a Rust application that's using [Slint](https://slint.rs/) for the user interface.
 
-## Features
+## About
 
-- Built with Dioxus 0.6
-- Responsive user interface
-- Simple counter demo
-- Optimized Deno Deploy TypeScript server
-- Brotli-compressed static assets support
+This template helps you get started developing a Rust application with Slint as toolkit
+for the user interface. It demonstrates the integration between the `.slint` UI markup and
+Rust code, how to react to callbacks, get and set properties, and use basic widgets.
 
-## Local Development
+## Usage
 
-### Prerequisites
+1. Install Rust by following its [getting-started guide](https://www.rust-lang.org/learn/get-started).
+   Once this is done, you should have the `rustc` compiler and the `cargo` build system installed in your `PATH`.
+2. Download and extract the [ZIP archive of this repository](https://github.com/slint-ui/slint-rust-template/archive/refs/heads/main.zip).
+3. Rename the extracted directory and change into it:
+    ```
+    mv slint-rust-template-main my-project
+    cd my-project    
+    ```
+4. Build with `cargo`:
+    ```
+    cargo build
+    ```
+5. Run the application binary:
+    ```
+    cargo run
+    ```
 
-- Rust and Cargo
-- Dioxus CLI
-- Deno (for local Deno Deploy testing)
+We recommend using an IDE for development, along with our [LSP-based IDE integration for `.slint` files](https://github.com/slint-ui/slint/blob/master/tools/lsp/README.md). You can also load this project directly in [Visual Studio Code](https://code.visualstudio.com) and install our [Slint extension](https://marketplace.visualstudio.com/items?itemName=Slint.slint).
 
-### Install Dioxus CLI
+## Next Steps
 
-```bash
-cargo install dioxus-cli
-```
+We hope that this template helps you get started, and that you enjoy exploring making user interfaces with Slint. To learn more
+about the Slint APIs and the `.slint` markup language, check out our [online documentation](https://slint.dev/docs).
 
-### Local Run
-
-1. Clone this repository
-
-2. Start the development server
-
-```bash
-dx serve --hot-reload
-```
-
-This will start the dev server at `http://localhost:8080`.
-
-### Build
-
-To build for production:
-
-```bash
-dx build --release
-```
-
-## Deploy to Deno Deploy
-
-### One-Click Build
-
-Run the build script:
-
-```bash
-bash build.sh
-```
-
-This will:
-- Build the Dioxus project
-- Prepare deployment files (in the `./deploy` directory)
-- Automatically copy necessary Deno config files
-
-### Local Test Deployment
-
-```bash
-deno task start
-```
-
-### Deploy to Deno Deploy
-
-1. Install deployctl:
-
-```bash
-deno install --allow-read --allow-write --allow-env --allow-net --allow-run --no-check -f https://deno.land/x/deploy/deployctl.ts
-```
-
-2. Log in to Deno Deploy
-
-3. Deploy the project:
-
-```bash
-deployctl deploy --project=always-blue-demo --prod ./deno_deploy.ts
-```
-
-## Project Structure
-
-- `src/main.rs` - Main application code
-- `index.html` - HTML template
-- `build.sh` - Build and deployment preparation script
-- `deno_deploy.ts` - Deno Deploy server code (TypeScript)
-- `deno.json` - Deno configuration
-- `deploy.json` - Deployment configuration
-
-## Advanced Features
-
-- **Brotli Compression Support**: Server prefers `.br` compressed files for faster loading
-- **Smart Caching**: Long-term cache for static assets
-- **SPA Mode Support**: Automatically fallback to index.html for non-resource requests
-- **Smart Error Handling**: Friendly 404 error page
-
-## License
-
-MIT
+Don't forget to edit this readme to replace it by yours, and edit the `name =` field in `Cargo.toml` to match the name of your
+project.
