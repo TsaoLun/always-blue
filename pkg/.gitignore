@@ -1,0 +1,4 @@
+# Allow all WASM build outputs for deployment
+!*.js
+!*.wasm
+!*.d.ts
