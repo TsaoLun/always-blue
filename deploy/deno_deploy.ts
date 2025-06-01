@@ -35,13 +35,19 @@ async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Ui
   // Clean up path - remove any "/./", normalize slashes
   const cleanPath = path.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
   
-  // Determine the base directory - when running from project root, use deploy/ subdirectory
-  const baseDir = "./deploy/";
-  // Remove leading ./ from cleanPath to avoid double dot
-  const normalizedPath = cleanPath.startsWith("./") ? cleanPath.slice(2) : cleanPath;
-  // Ensure the path starts with / for proper joining
-  const finalPath = normalizedPath.startsWith("/") ? normalizedPath : `/${normalizedPath}`;
-  const fullPath = `${baseDir}${finalPath}`;
+  // When running from deploy directory, files are relative to current directory
+  // No need to add deploy/ prefix since we're already in the deploy directory
+  let fullPath;
+  if (cleanPath.startsWith("./")) {
+    // Already relative path
+    fullPath = cleanPath;
+  } else if (cleanPath.startsWith("/")) {
+    // Absolute path, convert to relative
+    fullPath = `.${cleanPath}`;
+  } else {
+    // Relative path without prefix
+    fullPath = `./${cleanPath}`;
+  }
   
   console.log(`Resolved file path: ${fullPath}`);
   
@@ -77,16 +83,16 @@ async function handleRequest(req: Request): Promise<Response> {
   
   console.log(`Request: ${path}`);
   
-  // If requesting root directory or path without extension and not an API path, serve index.html
-  if (path === "/" || (!path.includes(".") && !path.startsWith("/api/"))) {
+  // If requesting root directory, serve index.html
+  if (path === "/") {
     path = "/index.html";
   }
   
   // Clean up path - normalize "/./assets/" to "/assets/" etc.
   path = path.replace(/\/\.\//g, "/");
   
-  // Convert path to relative server path (remove leading slash)
-  const filePath = `.${path}`;
+  // Convert path to relative server path
+  const filePath = path.startsWith("/") ? `.${path}` : `./${path}`;
   
   // Check if client supports Brotli compression
   const acceptsBrotli = req.headers.get("accept-encoding")?.includes("br") || false;
@@ -137,17 +143,24 @@ async function handleRequest(req: Request): Promise<Response> {
     return new Response(file, { headers });
   }
   
-  // If file not found and not an API request, try to serve index.html (SPA fallback)
+  // If file not found and this looks like a route (not a static asset), serve index.html (SPA fallback)
   if (!path.startsWith("/api/") && path !== "/index.html") {
-    console.log(`File not found, fallback to index.html: ${path}`);
-    const { file: indexFile } = await loadFile("./index.html", acceptsBrotli);
-    if (indexFile) {
-      const headers: Record<string, string> = {
-        ...baseHeaders,
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "max-age=3600",
-      };
-      return new Response(indexFile, { headers });
+    // Only fallback to index.html for paths that don't look like static assets
+    const isStaticAsset = /\.(js|css|wasm|png|jpg|jpeg|gif|svg|ico|json|txt|xml|woff|woff2|ttf|otf)$/i.test(path);
+    
+    if (!isStaticAsset) {
+      console.log(`File not found, fallback to index.html: ${path}`);
+      const { file: indexFile } = await loadFile("./index.html", acceptsBrotli);
+      if (indexFile) {
+        const headers: Record<string, string> = {
+          ...baseHeaders,
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "max-age=3600",
+        };
+        return new Response(indexFile, { headers });
+      }
+    } else {
+      console.log(`Static asset not found: ${path}`);
     }
   }
   
