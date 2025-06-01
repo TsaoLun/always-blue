@@ -5,7 +5,52 @@ fn main() {
     use slint::Model;
 
     let main_window = MainWindow::new().unwrap();
-    let mut tiles: Vec<TileData> = main_window.get_memory_tiles().iter().collect();
+    
+    // 准备游戏数据 - 使用 @image-url 宏来加载图片
+    let memory_tiles = [
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/fish.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/octopus.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/crab.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/jellyfish.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/starfish.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/turtle.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/whale.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+        TileData { 
+            image: slint::Image::load_from_path(std::path::Path::new("ui/icons/seahorse.png")).unwrap_or_default(), 
+            image_visible: false, 
+            solved: false 
+        },
+    ];
+    
+    let mut tiles: Vec<TileData> = memory_tiles.to_vec();
     tiles.extend(tiles.clone());
 
     use rand::seq::SliceRandom;
@@ -47,6 +92,24 @@ fn main() {
             }
         }
     );
+
+    // 处理 GitHub 页面打开
+    main_window.on_open_github_page(move || {
+        #[cfg(target_arch = "wasm32")]
+        {
+            web_sys::window()
+                .unwrap()
+                .open_with_url("https://github.com/tsaolun")
+                .unwrap();
+        }
+        
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            if let Err(e) = open::that("https://github.com/tsaolun") {
+                eprintln!("Failed to open URL: {}", e);
+            }
+        }
+    });
 
     main_window.run().unwrap();
 }

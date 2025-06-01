@@ -1,0 +1,199 @@
+import { GameWindow, TileData } from "app-window.slint";
+
+export enum Page {
+    home,
+    game,
+}
+
+component HomeButton inherits Rectangle {
+    in property <string> title;
+    in property <string> description;
+    in property <color> bg_color: #3498DB;
+    in property <color> hover_color: #2980B9;
+    
+    callback clicked;
+    
+    height: 120px;
+    width: 280px;
+    background: bg_color;
+    border-radius: 15px;
+    
+    states [
+        hover when touch_area.has_hover: {
+            background: hover_color;
+        }
+    ]
+    
+    animate background {
+        duration: 200ms;
+        easing: ease-in-out;
+    }
+    
+    // 按钮阴影效果
+    Rectangle {
+        background: #00000020;
+        border-radius: parent.border-radius;
+        x: 2px;
+        y: 2px;
+        width: parent.width;
+        height: parent.height;
+        z: -1;
+    }
+    
+    VerticalLayout {
+        padding: 20px;
+        alignment: center;
+        
+        Text {
+            text: title;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            horizontal-alignment: center;
+        }
+        
+        Text {
+            text: description;
+            font-size: 14px;
+            color: #ECF0F1;
+            horizontal-alignment: center;
+            wrap: word-wrap;
+        }
+    }
+    
+    touch_area := TouchArea {
+        clicked => {
+            parent.clicked();
+        }
+    }
+}
+
+component HomePage inherits Rectangle {
+    callback start_game();
+    callback open_github();
+    
+    background: @linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    
+    // 使用绝对定位来确保居中
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        
+        // 标题区域
+        Text {
+            text: "Always Blue";
+            font-size: 36px;
+            font-weight: 800;
+            color: white;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            x: 0;
+            y: 80px;
+            width: parent.width;
+            height: 50px;
+        }
+        
+        Text {
+            text: "Welcome to Ocean World";
+            font-size: 18px;
+            color: #ECF0F1;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            x: 0;
+            y: 140px;
+            width: parent.width;
+            height: 30px;
+        }
+        
+        // 第一个按钮
+        HomeButton {
+            title: "Ocean Memory Game";
+            description: "Match cute pixel ocean creatures\nTrain your memory!";
+            bg_color: #3498DB;
+            hover_color: #2980B9;
+            x: (parent.width - self.width) / 2;
+            y: 200px;
+            clicked => {
+                root.start_game();
+            }
+        }
+        
+        // 第二个按钮
+        HomeButton {
+            title: "Visit GitHub";
+            description: "Explore more projects and code\ngithub.com/tsaolun";
+            bg_color: #9B59B6;
+            hover_color: #8E44AD;
+            x: (parent.width - self.width) / 2;
+            y: 350px;
+            clicked => {
+                root.open_github();
+            }
+        }
+    }
+}
+
+export component MainWindow inherits Window {
+    preferred-width: 400px;
+    preferred-height: 600px;
+    min-width: 320px;
+    min-height: 500px;
+    title: "Always Blue - Ocean World";
+    
+    in-out property <Page> current_page: Page.home;
+    
+    // 游戏相关的属性和回调
+    callback check_if_pair_solved();
+    in property <bool> disable_tiles;
+    in-out property <[TileData]> memory_tiles;
+    
+    if current_page == Page.home: HomePage {
+        start_game => {
+            root.current_page = Page.game;
+        }
+        open_github => {
+            // 在网页环境中打开 GitHub 链接
+            // 这个回调将在 Rust 代码中处理
+            root.open_github_page();
+        }
+    }
+    
+    if current_page == Page.game: GameWindow {
+        width: root.width;
+        height: root.height;
+        disable_tiles: root.disable_tiles;
+        memory_tiles: root.memory_tiles;
+        
+        check_if_pair_solved => {
+            root.check_if_pair_solved();
+        }
+        
+        // 添加返回按钮
+        Rectangle {
+            x: 10px;
+            y: 10px;
+            width: 80px;
+            height: 35px;
+            background: #34495E;
+            border-radius: 5px;
+            z: 1000;
+            
+            Text {
+                text: "← Back";
+                color: white;
+                font-size: 14px;
+                horizontal-alignment: center;
+                vertical-alignment: center;
+            }
+            
+            TouchArea {
+                clicked => {
+                    root.current_page = Page.home;
+                }
+            }
+        }
+    }
+    
+    // GitHub 页面打开回调
+    callback open_github_page();
+}

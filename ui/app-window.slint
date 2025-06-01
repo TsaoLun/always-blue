@@ -1,4 +1,4 @@
-struct TileData {
+export struct TileData {
     image: image,
     image_visible: bool,
     solved: bool,
@@ -56,14 +56,8 @@ component MemoryTile inherits Rectangle {
     }
 }
 
-export component MainWindow inherits Window {
-    preferred-width: 400px;
-    preferred-height: 500px;
-    min-width: 320px;
-    min-height: 400px;
-    
-    // 确保在 web 上也能正确居中
-    title: "Memory Game";
+export component GameWindow inherits Rectangle {
+    // 游戏窗口现在是一个组件，不再是顶级窗口
     
     callback check_if_pair_solved();
     in property <bool> disable_tiles;

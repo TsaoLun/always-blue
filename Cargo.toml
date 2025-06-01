@@ -12,12 +12,16 @@ wasm-opt = false
 rand = "0.8"
 slint = "1.8.0"
 
-[build-dependencies]
-slint-build = "1.8.0"
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+open = "5.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = {version = "0.2"}
 getrandom = { version = "0.2.2", features = ["js"] }
+web-sys = { version = "0.3", features = ["Window"] }
+
+[build-dependencies]
+slint-build = "1.8.0"
 
 [lib]
 path = "src/main.rs"
