@@ -57,9 +57,25 @@
     <!-- canvas required by the Slint runtime -->
     <canvas id="canvas"></canvas>
     <script type="module">
-        // import the generated file.
-        import init from "./pkg/slint_rust_template.js";
-        init();
+        // 添加时间戳参数强制刷新 WASM 文件
+        const timestamp = Date.now();
+        const wasmUrl = `./pkg/slint_rust_template.js?v=${timestamp}`;
+        
+        try {
+            console.log('Loading WASM module from:', wasmUrl);
+            // import the generated file with version parameter
+            const module = await import(wasmUrl);
+            
+            console.log('Initializing WASM...');
+            await module.default(`./pkg/slint_rust_template_bg.wasm?v=${timestamp}`);
+            
+            console.log('Starting main application...');
+            module.main();
+            
+        } catch (error) {
+            console.error('Failed to load WASM:', error);
+            console.error('Error details:', error.message);
+        }
     </script>
 </body>
 </html>

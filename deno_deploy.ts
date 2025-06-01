@@ -36,15 +36,36 @@ async function serveFile(pathname: string): Promise<Response | null> {
     
     console.log(`Successfully served: ${filePath} as ${mimeType}`);
     
-    return new Response(file, {
-      headers: {
-        "Content-Type": mimeType,
-        "Cache-Control": pathname.includes("/pkg/") 
-          ? "public, max-age=31536000, immutable" 
-          : "public, max-age=3600",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    // 获取文件修改时间作为版本标识
+    const stat = await Deno.stat(filePath);
+    const lastModified = stat.mtime?.toUTCString() || new Date().toUTCString();
+    const etag = `"${stat.size}-${stat.mtime?.getTime() || Date.now()}"`;
+    
+    const headers: Record<string, string> = {
+      "Content-Type": mimeType,
+      "Last-Modified": lastModified,
+      "ETag": etag,
+      "Access-Control-Allow-Origin": "*",
+    };
+
+    // 针对不同文件类型设置缓存策略
+    if (pathname.includes("/pkg/") && pathname.endsWith(".wasm")) {
+      // WASM 文件 - 短期缓存，便于开发时更新
+      headers["Cache-Control"] = "public, max-age=300, must-revalidate";
+    } else if (pathname.includes("/pkg/") && pathname.endsWith(".js")) {
+      // WASM 生成的 JS 文件 - 短期缓存
+      headers["Cache-Control"] = "public, max-age=300, must-revalidate";
+    } else if (pathname.endsWith(".html")) {
+      // HTML 文件 - 不缓存，总是检查更新
+      headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+      headers["Pragma"] = "no-cache";
+      headers["Expires"] = "0";
+    } else {
+      // 其他静态资源 - 短期缓存
+      headers["Cache-Control"] = "public, max-age=3600, must-revalidate";
+    }
+    
+    return new Response(file, { headers });
   } catch (error) {
     console.log(`Failed to serve ${pathname}:`, (error as Error).message);
     return null;
