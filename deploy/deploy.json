@@ -7,14 +7,11 @@
         ".github",
         "node_modules",
         "target",
-        "src",
-        ".gitignore",
-        "README.md",
-        "Cargo.toml",
-        "Cargo.lock",
-        "build.rs",
-        "build-and-deploy.sh",
-        "prepare-deploy.sh"
+        "src"
+      ],
+      "include": [
+        "deno_deploy.ts",
+        "deno.json"
       ]
     }
   }
