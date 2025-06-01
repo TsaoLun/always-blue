@@ -1,194 +1,116 @@
 // deno_deploy.ts - Server for Deno Deploy
-// Customized for Dioxus 0.6 projects
+// Simplified version for Slint WASM projects
 
-// Define static content type mapping
-const contentTypeMap: Record<string, string> = {
+const MIME_TYPES: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".mjs": "application/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
   ".gif": "image/gif",
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon",
   ".wasm": "application/wasm",
-  ".br": "", // Brotli compressed files, let the server use the content type of original extension
-  ".gz": "", // Gzip compressed files, let the server use the content type of original extension
   ".ttf": "font/ttf",
   ".otf": "font/otf",
   ".woff": "font/woff",
   ".woff2": "font/woff2",
 };
 
-// Get content type based on file path
-function getContentType(path: string): string {
-  const ext = path.substring(path.lastIndexOf(".")).toLowerCase();
-  return contentTypeMap[ext] || "text/plain; charset=utf-8";
+function getMimeType(pathname: string): string {
+  const ext = pathname.substring(pathname.lastIndexOf(".")).toLowerCase();
+  return MIME_TYPES[ext] || "text/plain; charset=utf-8";
 }
 
-// Load file based on path, supporting compressed versions
-async function loadFile(path: string, acceptsBrotli = false): Promise<{ file: Uint8Array | null; compression?: string }> {
-  // Debug log to see what path is being requested
-  console.log(`Attempting to load file: ${path}`);
-  
-  // Clean up path - remove any "/./", normalize slashes
-  const cleanPath = path.replace(/\/\.\//g, "/").replace(/\/+/g, "/");
-  
-  // When running from deploy directory, files are relative to current directory
-  // No need to add deploy/ prefix since we're already in the deploy directory
-  let fullPath;
-  if (cleanPath.startsWith("./")) {
-    // Already relative path
-    fullPath = cleanPath;
-  } else if (cleanPath.startsWith("/")) {
-    // Absolute path, convert to relative
-    fullPath = `.${cleanPath}`;
-  } else {
-    // Relative path without prefix
-    fullPath = `./${cleanPath}`;
-  }
-  
-  console.log(`Resolved file path: ${fullPath}`);
-  
-  // If client supports Brotli compression, try loading the .br file first
-  if (acceptsBrotli) {
-    try {
-      const brotliFile = await Deno.readFile(`${fullPath}.br`);
-      if (brotliFile) {
-        console.log(`Successfully loaded Brotli file: ${fullPath}.br`);
-        return { file: brotliFile, compression: "br" };
-      }
-    } catch (_) {
-      // Ignore, continue to try other formats
-    }
-  }
-  
-  // Try to load the original file
+async function serveFile(pathname: string): Promise<Response | null> {
   try {
-    const file = await Deno.readFile(fullPath);
-    console.log(`Successfully loaded file: ${fullPath}`);
-    return { file };
-  } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : String(err);
-    console.log(`Failed to load file ${fullPath}: ${errorMessage}`);
-    return { file: null };
+    // Convert URL path to file path
+    const filePath = pathname.startsWith("/") ? `.${pathname}` : `./${pathname}`;
+    console.log(`Trying to serve file: ${filePath}`);
+    
+    const file = await Deno.readFile(filePath);
+    const mimeType = getMimeType(pathname);
+    
+    console.log(`Successfully served: ${filePath} as ${mimeType}`);
+    
+    return new Response(file, {
+      headers: {
+        "Content-Type": mimeType,
+        "Cache-Control": pathname.includes("/pkg/") 
+          ? "public, max-age=31536000, immutable" 
+          : "public, max-age=3600",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  } catch (error) {
+    console.log(`Failed to serve ${pathname}:`, (error as Error).message);
+    return null;
   }
 }
 
-// Main request handler function
-async function handleRequest(req: Request): Promise<Response> {
-  const url = new URL(req.url);
-  let path = url.pathname;
+async function handleRequest(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  let pathname = url.pathname;
   
-  console.log(`Request: ${path}`);
+  console.log(`Request: ${pathname}`);
   
-  // If requesting root directory, serve index.html
-  if (path === "/") {
-    path = "/index.html";
+  // Handle root path
+  if (pathname === "/") {
+    pathname = "/index.html";
   }
   
-  // Clean up path - normalize "/./assets/" to "/assets/" etc.
-  path = path.replace(/\/\.\//g, "/");
-  
-  // Convert path to relative server path
-  const filePath = path.startsWith("/") ? `.${path}` : `./${path}`;
-  
-  // Check if client supports Brotli compression
-  const acceptsBrotli = req.headers.get("accept-encoding")?.includes("br") || false;
-  
-  // Set basic response headers
-  const baseHeaders: Record<string, string> = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "SAMEORIGIN",
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-  };
-  
-  // Handle OPTIONS requests (CORS preflight)
-  if (req.method === "OPTIONS") {
+  // Handle CORS preflight
+  if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
-      headers: baseHeaders,
-    });
-  }
-  
-  // Try to load the file (original or compressed version)
-  const { file, compression } = await loadFile(filePath, acceptsBrotli);
-  
-  if (file) {
-    // Get content type; if .br extension, use the original extension's content type
-    const contentType = getContentType(filePath);
-    
-    const headers: Record<string, string> = {
-      ...baseHeaders,
-      "Content-Type": contentType,
-      "Cache-Control": path.includes("assets/") || path.includes("wasm/")
-        ? "public, max-age=31536000, immutable" // Long-term cache for static assets
-        : path.endsWith(".html")
-          ? "public, max-age=3600" // Medium cache for HTML files
-          : "public, max-age=86400", // One day cache for other files
-    };
-    
-    // If returning a compressed file, add the appropriate encoding header
-    if (compression === "br") {
-      headers["Content-Encoding"] = "br";
-    } else if (compression === "gzip") {
-      headers["Content-Encoding"] = "gzip";
-    }
-    
-    return new Response(file, { headers });
-  }
-  
-  // If file not found and this looks like a route (not a static asset), serve index.html (SPA fallback)
-  if (!path.startsWith("/api/") && path !== "/index.html") {
-    // Only fallback to index.html for paths that don't look like static assets
-    const isStaticAsset = /\.(js|css|wasm|png|jpg|jpeg|gif|svg|ico|json|txt|xml|woff|woff2|ttf|otf)$/i.test(path);
-    
-    if (!isStaticAsset) {
-      console.log(`File not found, fallback to index.html: ${path}`);
-      const { file: indexFile } = await loadFile("./index.html", acceptsBrotli);
-      if (indexFile) {
-        const headers: Record<string, string> = {
-          ...baseHeaders,
-          "Content-Type": "text/html; charset=utf-8",
-          "Cache-Control": "max-age=3600",
-        };
-        return new Response(indexFile, { headers });
-      }
-    } else {
-      console.log(`Static asset not found: ${path}`);
-    }
-  }
-  
-  // If nothing found, return 404
-  console.log(`404: ${path}`);
-  const { file: notFoundFile } = await loadFile("./404.html", acceptsBrotli);
-  if (notFoundFile) {
-    // If custom 404 page exists, use it
-    return new Response(notFoundFile, {
-      status: 404,
-      headers: { 
-        ...baseHeaders,
-        "Content-Type": "text/html; charset=utf-8" 
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
       },
     });
   }
   
-  // No custom 404 page, return plain text
-  return new Response("404 Not Found", {
+  // Try to serve the requested file
+  const fileResponse = await serveFile(pathname);
+  if (fileResponse) {
+    return fileResponse;
+  }
+  
+  // For missing static assets, return 404
+  const isStaticAsset = /\.(js|css|wasm|png|jpg|jpeg|gif|svg|ico|json|txt|xml|woff|woff2|ttf|otf|d\.ts)$/i.test(pathname);
+  if (isStaticAsset) {
+    console.log(`Static asset not found: ${pathname}`);
+    return new Response("File not found", {
+      status: 404,
+      headers: {
+        "Content-Type": "text/plain",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+  }
+  
+  // For non-static routes, fall back to index.html (SPA routing)
+  console.log(`Fallback to index.html for: ${pathname}`);
+  const indexResponse = await serveFile("/index.html");
+  if (indexResponse) {
+    return indexResponse;
+  }
+  
+  // If index.html is also not found, return 404
+  return new Response("Not Found", {
     status: 404,
-    headers: { 
-      ...baseHeaders,
-      "Content-Type": "text/plain; charset=utf-8" 
+    headers: {
+      "Content-Type": "text/plain",
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }
 
-// Start the server using the new Deno.serve API
+// Start the server
 Deno.serve(handleRequest);
 
-console.log("Deno server running. Waiting for requests...");
+console.log("Deno server running. Access your app at http://localhost:8000");
