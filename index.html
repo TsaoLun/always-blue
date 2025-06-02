@@ -51,12 +51,67 @@
         * {
             touch-action: manipulation;
         }
+        
+        /* Loading 样式 */
+        .loading-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0.9;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-container.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <!-- Loading screen -->
+    <div id="loading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Memory Game...</div>
+    </div>
+    
     <!-- canvas required by the Slint runtime -->
     <canvas id="canvas"></canvas>
     <script type="module">
+        // 获取 loading 元素
+        const loadingElement = document.getElementById('loading');
+        
+        // 隐藏 loading 的函数
+        function hideLoading() {
+            loadingElement.classList.add('hidden');
+        }
+        
         // 添加时间戳参数强制刷新 WASM 文件
         const timestamp = Date.now();
         const wasmUrl = `./pkg/slint_rust_template.js?v=${timestamp}`;
@@ -72,9 +127,15 @@
             console.log('Starting main application...');
             module.main();
             
+            // WASM 加载完成后隐藏 loading
+            hideLoading();
+            
         } catch (error) {
             console.error('Failed to load WASM:', error);
             console.error('Error details:', error.message);
+            
+            // 出错时也隐藏 loading，可以考虑显示错误信息
+            hideLoading();
         }
     </script>
 </body>
