@@ -14,11 +14,22 @@ slint = "1.8.0"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 open = "5.0"
+rodio = "0.17"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = {version = "0.2"}
 getrandom = { version = "0.2.2", features = ["js"] }
-web-sys = { version = "0.3", features = ["Window"] }
+web-sys = { version = "0.3", features = [
+    "Window", 
+    "Document", 
+    "HtmlAudioElement", 
+    "AudioContext", 
+    "AudioBuffer", 
+    "AudioBufferSourceNode",
+    "GainNode",
+    "AudioDestinationNode"
+] }
+js-sys = "0.3"
 
 [build-dependencies]
 slint-build = "1.8.0"

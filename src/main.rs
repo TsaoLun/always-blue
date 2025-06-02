@@ -1,8 +1,18 @@
 slint::include_modules!();
 
+mod audio;
+use audio::AudioManager;
+use std::rc::Rc;
+
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen(start))]
 fn main() {
     use slint::Model;
+    
+    // 创建音频管理器
+    let audio_manager = Rc::new(AudioManager::new().unwrap_or_else(|_| {
+        eprintln!("Failed to initialize audio manager");
+        AudioManager::new().unwrap()
+    }));
 
     let main_window = MainWindow::new().unwrap();
     
@@ -60,6 +70,7 @@ fn main() {
     main_window.set_memory_tiles(tiles_model.clone().into());
 
     let main_window_weak = main_window.as_weak();
+    let audio_manager_clone = audio_manager.clone();
     main_window.on_check_if_pair_solved(move || {
         let mut flipped_tiles =
             tiles_model
@@ -76,6 +87,8 @@ fn main() {
                     t2.solved = true;
                     tiles_model.set_row_data(t1_idx, t1);
                     tiles_model.set_row_data(t2_idx, t2);
+                    // 播放匹配成功音效
+                    audio_manager_clone.play_match_sound();
                 } else {
                     // Reset the tiles after a short delay
                     let main_window = main_window_weak.unwrap();
@@ -92,6 +105,22 @@ fn main() {
             }
         }
     );
+
+    // 音频回调处理
+    let audio_manager_bg = audio_manager.clone();
+    main_window.on_start_background_music(move || {
+        audio_manager_bg.start_background_music();
+    });
+    
+    let audio_manager_stop = audio_manager.clone();
+    main_window.on_stop_background_music(move || {
+        audio_manager_stop.stop_background_music();
+    });
+    
+    let audio_manager_match = audio_manager.clone();
+    main_window.on_play_match_sound(move || {
+        audio_manager_match.play_match_sound();
+    });
 
     // 处理 GitHub 页面打开
     main_window.on_open_github_page(move || {

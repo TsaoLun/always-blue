@@ -15,6 +15,14 @@ fi
 echo "Running wasm-pack build..."
 wasm-pack build --target web --out-dir pkg
 
+# 复制音频文件到pkg目录
+echo "Copying audio files..."
+if [ ! -d "pkg/raw" ]; then
+    mkdir -p pkg/raw
+fi
+cp raw/moments.mp3 pkg/raw/
+cp raw/beep.wav pkg/raw/
+
 # 检查构建结果
 if [ ! -f "pkg/slint_rust_template.js" ]; then
     echo "Error: Build failed - JavaScript file not found"

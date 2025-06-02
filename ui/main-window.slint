@@ -150,6 +150,7 @@ export component MainWindow inherits Window {
     if current_page == Page.home: HomePage {
         start_game => {
             root.current_page = Page.game;
+            root.start_background_music();
         }
         open_github => {
             // 在网页环境中打开 GitHub 链接
@@ -166,6 +167,10 @@ export component MainWindow inherits Window {
         
         check_if_pair_solved => {
             root.check_if_pair_solved();
+        }
+        
+        play_match_sound => {
+            root.play_match_sound();
         }
         
         // 添加返回按钮
@@ -189,6 +194,7 @@ export component MainWindow inherits Window {
             TouchArea {
                 clicked => {
                     root.current_page = Page.home;
+                    root.stop_background_music();
                 }
             }
         }
@@ -196,4 +202,9 @@ export component MainWindow inherits Window {
     
     // GitHub 页面打开回调
     callback open_github_page();
+    
+    // 音频回调
+    callback start_background_music();
+    callback stop_background_music();
+    callback play_match_sound();
 }
