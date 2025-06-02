@@ -9,7 +9,7 @@ use rodio::{Decoder, OutputStream, Sink, Source};
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 #[cfg(target_arch = "wasm32")]
-use web_sys::{HtmlAudioElement, AudioContext};
+use web_sys::HtmlAudioElement;
 #[cfg(target_arch = "wasm32")]
 use std::cell::RefCell;
 
@@ -23,8 +23,6 @@ pub struct AudioManager {
     
     #[cfg(target_arch = "wasm32")]
     background_audio: RefCell<Option<HtmlAudioElement>>,
-    #[cfg(target_arch = "wasm32")]
-    audio_context: Option<AudioContext>,
 }
 
 impl AudioManager {
@@ -44,10 +42,8 @@ impl AudioManager {
         
         #[cfg(target_arch = "wasm32")]
         {
-            let audio_context = AudioContext::new().ok();
             Ok(AudioManager {
                 background_audio: RefCell::new(None),
-                audio_context,
             })
         }
     }

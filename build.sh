@@ -12,8 +12,8 @@ if [ -d "pkg" ]; then
 fi
 
 # 构建 WASM
-echo "Running wasm-pack build..."
-wasm-pack build --target web --out-dir pkg
+echo "Running wasm-pack build with optimizations..."
+wasm-pack build --target web --out-dir pkg --release -- --features wasm
 
 # 复制音频文件到pkg目录
 echo "Copying audio files..."
@@ -22,6 +22,37 @@ if [ ! -d "pkg/raw" ]; then
 fi
 cp raw/moments.mp3 pkg/raw/
 cp raw/beep.wav pkg/raw/
+
+# 优化WASM文件大小
+echo "Optimizing WASM file size..."
+if command -v wasm-opt >/dev/null 2>&1; then
+    echo "Running wasm-opt for further optimization..."
+    wasm-opt -Oz --enable-mutable-globals pkg/slint_rust_template_bg.wasm -o pkg/slint_rust_template_bg.wasm
+else
+    echo "wasm-opt not found, skipping additional optimization"
+fi
+
+# 添加Brotli压缩
+echo "Creating Brotli compressed versions..."
+if command -v brotli >/dev/null 2>&1; then
+    echo "Compressing WASM with Brotli..."
+    brotli -q 11 -o pkg/slint_rust_template_bg.wasm.br pkg/slint_rust_template_bg.wasm
+    
+    echo "Compressing JS with Brotli..."
+    brotli -q 11 -o pkg/slint_rust_template.js.br pkg/slint_rust_template.js
+    
+    echo "Compression results:"
+    echo "Original WASM: $(ls -lh pkg/slint_rust_template_bg.wasm | awk '{print $5}')"
+    echo "Brotli WASM:   $(ls -lh pkg/slint_rust_template_bg.wasm.br | awk '{print $5}')"
+    echo "Original JS:   $(ls -lh pkg/slint_rust_template.js | awk '{print $5}')"
+    echo "Brotli JS:     $(ls -lh pkg/slint_rust_template.js.br | awk '{print $5}')"
+else
+    echo "brotli not found, skipping compression"
+fi
+
+# 显示文件大小
+echo "WASM file size:"
+ls -lh pkg/slint_rust_template_bg.wasm
 
 # 检查构建结果
 if [ ! -f "pkg/slint_rust_template.js" ]; then

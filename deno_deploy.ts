@@ -18,6 +18,9 @@ const MIME_TYPES: Record<string, string> = {
   ".otf": "font/otf",
   ".woff": "font/woff",
   ".woff2": "font/woff2",
+  ".mp3": "audio/mpeg",
+  ".wav": "audio/wav",
+  ".br": "application/brotli",
 };
 
 function getMimeType(pathname: string): string {
@@ -25,14 +28,31 @@ function getMimeType(pathname: string): string {
   return MIME_TYPES[ext] || "text/plain; charset=utf-8";
 }
 
-async function serveFile(pathname: string): Promise<Response | null> {
+async function serveFile(pathname: string, acceptEncoding?: string): Promise<Response | null> {
   try {
-    // Convert URL path to file path
-    const filePath = pathname.startsWith("/") ? `.${pathname}` : `./${pathname}`;
+    // 检查是否支持Brotli压缩并且存在.br文件
+    const supportsBrotli = acceptEncoding?.includes("br") || false;
+    let filePath = pathname.startsWith("/") ? `.${pathname}` : `./${pathname}`;
+    let useBrotli = false;
+    
+    // 对于WASM和JS文件，优先尝试Brotli版本
+    if (supportsBrotli && (pathname.endsWith(".wasm") || pathname.endsWith(".js"))) {
+      const brotliPath = `${filePath}.br`;
+      try {
+        await Deno.stat(brotliPath);
+        filePath = brotliPath;
+        useBrotli = true;
+        console.log(`Serving Brotli compressed: ${brotliPath}`);
+      } catch {
+        // Brotli文件不存在，使用原文件
+        console.log(`Brotli file not found, using original: ${filePath}`);
+      }
+    }
+    
     console.log(`Trying to serve file: ${filePath}`);
     
     const file = await Deno.readFile(filePath);
-    const mimeType = getMimeType(pathname);
+    const mimeType = useBrotli ? getMimeType(pathname) : getMimeType(pathname); // 使用原始文件的MIME类型
     
     console.log(`Successfully served: ${filePath} as ${mimeType}`);
     
@@ -47,6 +67,12 @@ async function serveFile(pathname: string): Promise<Response | null> {
       "ETag": etag,
       "Access-Control-Allow-Origin": "*",
     };
+    
+    // 如果使用了Brotli压缩，添加相应的头部
+    if (useBrotli) {
+      headers["Content-Encoding"] = "br";
+      headers["Vary"] = "Accept-Encoding";
+    }
 
     // 针对不同文件类型设置缓存策略
     if (pathname.includes("/pkg/") && pathname.endsWith(".wasm")) {
@@ -75,6 +101,7 @@ async function serveFile(pathname: string): Promise<Response | null> {
 async function handleRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
   let pathname = url.pathname;
+  const acceptEncoding = request.headers.get("Accept-Encoding") || "";
   
   console.log(`Request: ${pathname}`);
   
@@ -96,7 +123,7 @@ async function handleRequest(request: Request): Promise<Response> {
   }
   
   // Try to serve the requested file
-  const fileResponse = await serveFile(pathname);
+  const fileResponse = await serveFile(pathname, acceptEncoding);
   if (fileResponse) {
     return fileResponse;
   }
