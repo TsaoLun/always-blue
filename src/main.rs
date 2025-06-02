@@ -110,6 +110,8 @@ fn main() {
     let audio_manager_bg = audio_manager.clone();
     main_window.on_start_background_music(move || {
         audio_manager_bg.start_background_music();
+        // 在开始游戏时预加载音效，减少播放延迟
+        audio_manager_bg.preload_match_sound();
     });
     
     let audio_manager_stop = audio_manager.clone();

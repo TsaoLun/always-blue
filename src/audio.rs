@@ -23,6 +23,8 @@ pub struct AudioManager {
     
     #[cfg(target_arch = "wasm32")]
     background_audio: RefCell<Option<HtmlAudioElement>>,
+    #[cfg(target_arch = "wasm32")]
+    match_sound_audio: RefCell<Option<HtmlAudioElement>>,
 }
 
 impl AudioManager {
@@ -44,6 +46,7 @@ impl AudioManager {
         {
             Ok(AudioManager {
                 background_audio: RefCell::new(None),
+                match_sound_audio: RefCell::new(None),
             })
         }
     }
@@ -125,6 +128,35 @@ impl AudioManager {
             self.play_web_match_sound();
         }
     }
+
+    // 预加载音效（WASM环境）
+    #[cfg(target_arch = "wasm32")]
+    pub fn preload_match_sound(&self) {
+        use wasm_bindgen::JsCast;
+        use web_sys::window;
+        
+        if let Some(window) = window() {
+            if let Some(document) = window.document() {
+                if let Ok(audio) = document.create_element("audio") {
+                    let audio = audio.dyn_into::<HtmlAudioElement>().unwrap();
+                    audio.set_src("raw/beep.wav");
+                    audio.set_volume(0.7);
+                    audio.set_preload("auto"); // 预加载音频
+                    
+                    // 存储预加载的音频引用
+                    *self.match_sound_audio.borrow_mut() = Some(audio);
+                    
+                    web_sys::console::log_1(&"Match sound preloaded (WASM)".into());
+                }
+            }
+        }
+    }
+
+    // 非WASM环境的空实现，保持API一致性
+    #[cfg(not(target_arch = "wasm32"))]
+    pub fn preload_match_sound(&self) {
+        // 非WASM环境不需要预加载
+    }
     
     // WASM环境下的音频实现
     #[cfg(target_arch = "wasm32")]
@@ -164,6 +196,16 @@ impl AudioManager {
     
     #[cfg(target_arch = "wasm32")]
     fn play_web_match_sound(&self) {
+        // 首先尝试使用预加载的音频
+        if let Some(audio) = self.match_sound_audio.borrow().as_ref() {
+            // 重置音频位置并播放
+            audio.set_current_time(0.0);
+            let _ = audio.play();
+            web_sys::console::log_1(&"Match sound played from preloaded audio (WASM)".into());
+            return;
+        }
+        
+        // 如果没有预加载音频，则创建新的音频元素（兜底方案）
         use wasm_bindgen::JsCast;
         use web_sys::window;
         
@@ -175,7 +217,7 @@ impl AudioManager {
                     audio.set_volume(0.7);
                     
                     let _ = audio.play();
-                    web_sys::console::log_1(&"Match sound played (WASM)".into());
+                    web_sys::console::log_1(&"Match sound played with new audio element (WASM)".into());
                 }
             }
         }
