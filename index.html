@@ -131,9 +131,13 @@
             hideLoading();
             
         } catch (error) {
-            console.error('Failed to load WASM:', error);
-            console.error('Error details:', error.message);
-            
+            // 暂时过滤 __wbindgen_throw
+            if (error.stack && error.stack.includes('__wbindgen_throw')) {
+                console.log('Ignoring __wbindgen_throw error:', error);
+            } else {
+                console.error('Failed to load WASM:', error);
+                console.error('Error details:', error.message);
+            }
             // 出错时也隐藏 loading，可以考虑显示错误信息
             hideLoading();
         }
