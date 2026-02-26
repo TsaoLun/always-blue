@@ -1,18 +1,35 @@
+//! 音频管理模块
+//! 
+//! 提供跨平台的音频播放功能，支持：
+//! - 桌面平台：使用rodio库
+//! - WASM平台：使用Web Audio API
+//! 
+//! 模块自动根据目标平台选择适当的实现。
+
+// 标准库导入
 use std::fs::File;
 use std::io::BufReader;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+// 平台特定导入
 #[cfg(not(target_arch = "wasm32"))]
 use rodio::{Decoder, OutputStream, Sink, Source};
 
 #[cfg(target_arch = "wasm32")]
-use std::cell::RefCell;
-#[cfg(target_arch = "wasm32")]
-use wasm_bindgen::prelude::*;
-#[cfg(target_arch = "wasm32")]
-use web_sys::HtmlAudioElement;
+use {
+    std::cell::RefCell,
+    wasm_bindgen::prelude::*,
+    web_sys::HtmlAudioElement,
+};
 
+/// 音频管理器
+/// 
+/// 负责管理游戏中的所有音频播放，包括：
+/// - 背景音乐
+/// - 音效（匹配成功音效等）
+/// 
+/// 根据编译目标自动选择适当的后端实现。
 pub struct AudioManager {
     #[cfg(not(target_arch = "wasm32"))]
     _stream: OutputStream,
@@ -28,6 +45,11 @@ pub struct AudioManager {
 }
 
 impl AudioManager {
+    /// 创建新的音频管理器
+    /// 
+    /// # 返回
+    /// - `Ok(AudioManager)`: 成功创建的音频管理器
+    /// - `Err(Box<dyn std::error::Error>)`: 初始化失败的错误
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -51,6 +73,10 @@ impl AudioManager {
         }
     }
 
+    /// 开始播放背景音乐
+    /// 
+    /// 背景音乐会在后台循环播放，音量设置为30%。
+    /// 在WASM环境中，会自动创建HTML5音频元素。
     pub fn start_background_music(&self) {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -89,6 +115,10 @@ impl AudioManager {
         }
     }
 
+    /// 停止播放背景音乐
+    /// 
+    /// 停止当前正在播放的背景音乐。
+    /// 在WASM环境中，会暂停并重置音频元素。
     pub fn stop_background_music(&self) {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -109,6 +139,10 @@ impl AudioManager {
         }
     }
 
+    /// 播放匹配成功音效
+    /// 
+    /// 播放匹配成功时的提示音效，音量设置为70%。
+    /// 支持多种音频格式（wav, mp3, ogg），按顺序尝试加载。
     pub fn play_match_sound(&self) {
         #[cfg(not(target_arch = "wasm32"))]
         {
@@ -150,6 +184,10 @@ impl AudioManager {
 
     // 预加载音效（WASM环境）
     #[cfg(target_arch = "wasm32")]
+    /// 预加载匹配音效（仅WASM环境）
+    /// 
+    /// 在WASM环境中预加载音效文件，减少首次播放时的延迟。
+    /// 桌面环境此方法为空操作。
     pub fn preload_match_sound(&self) {
         use wasm_bindgen::JsCast;
         use web_sys::window;

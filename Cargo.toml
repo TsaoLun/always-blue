@@ -1,5 +1,5 @@
 [package]
-name = "slint-rust-template"
+name = "always-blue"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,7 +10,7 @@ wasm-opt = ["-Oz", "--enable-mutable-globals"]
 
 [dependencies]
 rand = "0.8"
-slint = "1.8.0"
+slint = "1.15.1"
 
 [features]
 default = []
@@ -31,10 +31,12 @@ web-sys = { version = "0.3", features = [
 js-sys = "0.3"
 
 [build-dependencies]
-slint-build = "1.8.0"
+slint-build = "1.15.1"
 
+# WASM构建需要cdylib类型
 [lib]
-path = "src/main.rs"
+name = "always_blue_wasm"
+path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 # 优化WASM体积
