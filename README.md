@@ -31,7 +31,7 @@ cargo run
 ./build.sh
 
 # 启动本地服务器
-python3 -m http.server 8000
+deno task start
 # 或使用其他静态文件服务器
 ```
 
@@ -93,9 +93,9 @@ wasm-pack build --target web --out-dir pkg --release -- --features wasm
 
 构建完成后，`pkg` 目录包含：
 
-- `always_blue.js` - JavaScript 胶水代码
-- `always_blue_bg.wasm` - WASM 二进制文件
-- `always_blue.js.br` / `always_blue_bg.wasm.br` - Brotli 压缩版本
+- `always_blue_wasm.js` - JavaScript 胶水代码
+- `always_blue_wasm_bg.wasm` - WASM 二进制文件
+- `always_blue_wasm.js.br` / `always_blue_wasm_bg.wasm.br` - Brotli 压缩版本
 
 将 `pkg` 目录、`index.html` 和 `raw` 目录一起部署到静态文件服务器。
 
