@@ -1,0 +1,89 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="controllerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#667eea" />
+      <stop offset="100%" stop-color="#764ba2" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <style>
+      .pixel { fill: #667eea; }
+      .pixel-dark { fill: #5a6fd8; }
+      .pixel-light { fill: #7b8fee; }
+      .pixel-button { fill: #E74C3C; }
+      .pixel-button-dark { fill: #C0392B; }
+      .pixel-dpad { fill: #2C3E50; }
+      .pixel-dpad-dark { fill: #1C2833; }
+    </style>
+  </defs>
+  
+  <!-- Controller body -->
+  <rect x="32" y="40" width="64" height="48" fill="url(#controllerGradient)" filter="url(#shadow)" rx="4"/>
+  
+  <!-- Left grip -->
+  <rect x="16" y="48" width="16" height="32" class="pixel-dark" rx="2"/>
+  <rect x="16" y="48" width="8" height="8" class="pixel-light"/>
+  <rect x="24" y="48" width="8" height="8" class="pixel"/>
+  <rect x="16" y="56" width="8" height="8" class="pixel"/>
+  <rect x="24" y="56" width="8" height="8" class="pixel-light"/>
+  
+  <!-- Right grip -->
+  <rect x="96" y="48" width="16" height="32" class="pixel-dark" rx="2"/>
+  <rect x="96" y="48" width="8" height="8" class="pixel-light"/>
+  <rect x="104" y="48" width="8" height="8" class="pixel"/>
+  <rect x="96" y="56" width="8" height="8" class="pixel"/>
+  <rect x="104" y="56" width="8" height="8" class="pixel-light"/>
+  
+  <!-- D-pad -->
+  <rect x="40" y="48" width="8" height="8" class="pixel-dpad"/>
+  <rect x="48" y="48" width="8" height="8" class="pixel-dpad-dark"/>
+  <rect x="40" y="56" width="8" height="8" class="pixel-dpad-dark"/>
+  <rect x="48" y="56" width="8" height="8" class="pixel-dpad"/>
+  
+  <!-- D-pad up -->
+  <rect x="48" y="40" width="8" height="8" class="pixel-dpad"/>
+  <!-- D-pad down -->
+  <rect x="48" y="64" width="8" height="8" class="pixel-dpad-dark"/>
+  <!-- D-pad left -->
+  <rect x="32" y="56" width="8" height="8" class="pixel-dpad"/>
+  <!-- D-pad right -->
+  <rect x="64" y="56" width="8" height="8" class="pixel-dpad-dark"/>
+  
+  <!-- Action buttons (A, B, X, Y style) -->
+  <!-- Top-right button (Y) -->
+  <circle cx="88" cy="56" r="8" class="pixel-button"/>
+  <circle cx="88" cy="56" r="6" class="pixel-button-dark"/>
+  
+  <!-- Bottom-right button (A) -->
+  <circle cx="88" cy="72" r="8" class="pixel-button"/>
+  <circle cx="88" cy="72" r="6" class="pixel-button-dark"/>
+  
+  <!-- Left action button (X) -->
+  <circle cx="72" cy="56" r="6" class="pixel-button"/>
+  <!-- Right action button (B) -->
+  <circle cx="104" cy="56" r="6" class="pixel-button"/>
+  
+  <!-- Shoulder buttons -->
+  <!-- Left shoulder (L1) -->
+  <rect x="32" y="32" width="24" height="8" class="pixel-dark" rx="2"/>
+  <rect x="32" y="32" width="8" height="8" class="pixel-light"/>
+  <rect x="40" y="32" width="8" height="8" class="pixel-dark"/>
+  <rect x="48" y="32" width="8" height="8" class="pixel"/>
+  
+  <!-- Right shoulder (R1) -->
+  <rect x="72" y="32" width="24" height="8" class="pixel-dark" rx="2"/>
+  <rect x="72" y="32" width="8" height="8" class="pixel-light"/>
+  <rect x="80" y="32" width="8" height="8" class="pixel-dark"/>
+  <rect x="88" y="32" width="8" height="8" class="pixel"/>
+  
+  <!-- Start/Select buttons -->
+  <!-- Select button -->
+  <rect x="56" y="80" width="8" height="4" class="pixel-dpad" rx="1"/>
+  <!-- Start button -->
+  <rect x="64" y="80" width="8" height="4" class="pixel-dpad-dark" rx="1"/>
+  
+  <!-- Controller details -->
+  <rect x="40" y="64" width="8" height="8" class="pixel-light" opacity="0.3"/>
+  <rect x="56" y="64" width="8" height="8" class="pixel-light" opacity="0.3"/>
+</svg>
