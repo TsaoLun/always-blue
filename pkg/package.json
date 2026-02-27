@@ -1,0 +1,15 @@
+{
+  "name": "always-blue",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "always_blue_wasm_bg.wasm",
+    "always_blue_wasm.js",
+    "always_blue_wasm.d.ts"
+  ],
+  "main": "always_blue_wasm.js",
+  "types": "always_blue_wasm.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

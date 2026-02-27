@@ -14,6 +14,7 @@ fi
 # 构建 WASM
 echo "Running wasm-pack build with optimizations..."
 wasm-pack build --target web --out-dir pkg --release -- --features wasm --no-default-features
+rm -f pkg/.gitignore
 
 # 复制音频文件到pkg目录
 echo "Copying audio files..."
