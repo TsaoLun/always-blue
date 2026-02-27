@@ -3,32 +3,35 @@ name = "always-blue"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = ["desktop"] #or wasm/desktop
+desktop = ["open", "rodio"]
+wasm = ["wasm-bindgen", "getrandom", "web-sys", "js-sys"]
+
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = ["-Oz", "--enable-mutable-globals"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# 公共依赖
 rand = "0.8"
 slint = "1.15.1"
 
-[features]
-default = []
-wasm = []
+# 桌面特性依赖
+open = { version = "5.0", optional = true }
+rodio = { version = "0.17", optional = true }
 
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-open = "5.0"
-rodio = "0.17"
-
-[target.'cfg(target_arch = "wasm32")'.dependencies]
-wasm-bindgen = {version = "0.2"}
-getrandom = { version = "0.2.2", features = ["js"] }
-web-sys = { version = "0.3", features = [
+# WASM特性依赖
+wasm-bindgen = { version = "0.2", optional = true }
+getrandom = { version = "0.2.2", optional = true, features = ["js"] }
+web-sys = { version = "0.3", optional = true, features = [
     "Window",
     "Document",
-    "HtmlAudioElement"
+    "HtmlAudioElement",
+    "console"
 ] }
-js-sys = "0.3"
+js-sys = { version = "0.3", optional = true }
 
 [build-dependencies]
 slint-build = "1.15.1"

@@ -1,23 +1,23 @@
 //! 游戏逻辑模块
-//! 
+//!
 //! 包含游戏的核心逻辑，包括：
 //! - 游戏状态管理
 //! - 记忆卡片匹配逻辑
 //! - 音频回调处理
-//! 
+//!
 //! 此模块负责初始化游戏并处理用户交互。
 
 mod tiles;
 use std::{rc::Rc, time::Duration};
 
-use slint::{ComponentHandle, VecModel, Model, Timer};
+use slint::{ComponentHandle, Model, Timer, VecModel};
 
 use crate::{audio::AudioManager, MainWindow};
 
 /// 初始化游戏
-/// 
+///
 /// 设置游戏状态、绑定回调函数，并准备音频系统。
-/// 
+///
 /// # 参数
 /// - `main_window`: 主窗口引用，用于设置游戏状态和绑定回调
 pub fn init(main_window: &MainWindow) {
@@ -27,7 +27,7 @@ pub fn init(main_window: &MainWindow) {
         AudioManager::new().unwrap()
     }));
 
-    let tiles_model = std::rc::Rc::new(VecModel::from(tiles::gen()));
+    let tiles_model = Rc::new(VecModel::from(tiles::gen()));
     main_window.set_memory_tiles(tiles_model.clone().into());
 
     let main_window_weak = main_window.as_weak();

@@ -20,14 +20,16 @@ Always Blue 是一款海洋主题的记忆配对游戏，玩家需要找到相�
 git clone <repository-url>
 cd always-blue
 
-# 构建并运行
+# 构建并运行（默认使用desktop特性，可手动修改为wasm)
 cargo run
+# 或显式指定特性
+cargo run --features desktop
 ```
 
 ### Web 版本
 
 ```bash
-# 构建 WASM
+# 构建 WASM（使用wasm特性）
 ./build.sh
 
 # 启动本地服务器
@@ -70,13 +72,21 @@ always-blue/
 ### 开发构建
 
 ```bash
-cargo build
+# 桌面版本
+cargo build --features desktop
+
+# WASM版本（本地检查）
+cargo build --features wasm --no-default-features
 ```
 
 ### 发布构建
 
 ```bash
-cargo build --release
+# 桌面版本
+cargo build --release --features desktop
+
+# WASM版本（使用build.sh脚本）
+./build.sh
 ```
 
 ### WASM 构建
@@ -86,7 +96,7 @@ cargo build --release
 ./build.sh
 
 # 或手动构建
-wasm-pack build --target web --out-dir pkg --release -- --features wasm
+wasm-pack build --target web --out-dir pkg --release -- --features wasm --no-default-features
 ```
 
 ## 🌐 部署到 Web
@@ -164,10 +174,13 @@ wasm-pack build --target web --out-dir pkg --release -- --features wasm
 
 ```bash
 # 详细构建输出
-cargo build --verbose
+cargo build --verbose --features desktop
 
 # WASM 调试构建
-wasm-pack build --target web --out-dir pkg --dev -- --features wasm
+wasm-pack build --target web --out-dir pkg --dev -- --features wasm --no-default-features
+
+# 检查WASM代码（不实际构建WASM）
+cargo check --features wasm --no-default-features
 ```
 
 ## 📄 许可证
@@ -178,6 +191,18 @@ wasm-pack build --target web --out-dir pkg --dev -- --features wasm
 
 欢迎提交 Issue 和 Pull Request！
 
+### 开发指南
+
+项目使用特性（features）来区分不同平台：
+- `desktop`：桌面版本特性（默认启用）
+- `wasm`：WebAssembly版本特性
+
+开发时请注意：
+1. 使用 `#[cfg(feature = "desktop")]` 和 `#[cfg(feature = "wasm")]` 进行条件编译
+2. 桌面和WASM版本共享大部分游戏逻辑
+3. 平台特定的代码（如音频、文件访问）需要分别实现
+
+### 贡献步骤
 1. Fork 项目
 2. 创建功能分支
 3. 提交更改

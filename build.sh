@@ -13,7 +13,7 @@ fi
 
 # 构建 WASM
 echo "Running wasm-pack build with optimizations..."
-wasm-pack build --target web --out-dir pkg --release -- --features wasm
+wasm-pack build --target web --out-dir pkg --release -- --features wasm --no-default-features
 
 # 复制音频文件到pkg目录
 echo "Copying audio files..."
