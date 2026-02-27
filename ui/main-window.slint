@@ -28,7 +28,7 @@ component HomePage inherits Rectangle {
             background: white;
 
             Image {
-                source: @image-url("icons/avatar.svg");
+                source: @image-url("icons/a.jpg");
                 width: 125px;
                 height: 125px;
             }
@@ -43,47 +43,42 @@ component HomePage inherits Rectangle {
 
             VerticalLayout {
                 padding: 0px;
-                spacing: 12px;
-                
+                spacing: 6px;
+
                 Text {
                     text: "Hi, folks, I'm Chaolun.";
                     font-size: 18px;
                     color: #000000;
                     horizontal-alignment: left;
                     wrap: word-wrap;
+                    letter-spacing: 0.8px;
                 }
-                
+
                 Text {
-                    text: "I live in Shenzhen and work as an Software Engineer 👨‍💻.";
+                    text: "I live in Shenzhen and work as a Software Engineer. I have experience in Rust, Go, and Node.js.";
                     font-size: 18px;
                     color: #000000;
                     horizontal-alignment: left;
                     wrap: word-wrap;
+                    letter-spacing: 0.8px;
                 }
-                
+
                 Text {
-                    text: "I am also a Gamer.";
+                    text: "I’m focused on backend architecture and system design, and I’m always open to interesting projects and collaborations.";
                     font-size: 18px;
                     color: #000000;
                     horizontal-alignment: left;
                     wrap: word-wrap;
-                }
-                
-                Text {
-                    text: "Here are some projects I have made.";
-                    font-size: 18px;
-                    color: #000000;
-                    horizontal-alignment: left;
-                    wrap: word-wrap;
+                    letter-spacing: 0.8px;
                 }
             }
         }
 
         // 社交图标区域 (右下角)
         Rectangle {
-            x: parent.width - 200px;
+            x: parent.width - 120px;
             y: parent.height - 50px;
-            width: 180px;
+            width: 120px;
             height: 40px;
 
             // GitHub 图标
@@ -113,14 +108,14 @@ component HomePage inherits Rectangle {
             Rectangle {
                 x: 60px;
                 y: 0;
-                width: 40px;
-                height: 40px;
+                width: 45px;
+                height: 45px;
                 background: transparent;
 
                 Image {
                     source: @image-url("icons/game.svg");
-                    width: 25px;
-                    height: 25px;
+                    width: 45px;
+                    height: 45px;
                     horizontal-alignment: center;
                     vertical-alignment: center;
                 }
