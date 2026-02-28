@@ -19,54 +19,25 @@ use slint::Image;
 /// # 返回
 /// - `Vec<TileData>`: 包含16张卡片的向量，每对卡片有相同的图片
 pub fn gen() -> Vec<TileData> {
-    let memory_tiles = [
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/fish.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/octopus.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/crab.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/jellyfish.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/starfish.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/turtle.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/whale.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
-        TileData {
-            image: Image::load_from_path(Path::new("ui/icons/seahorse.png")).unwrap_or_default(),
-            image_visible: false,
-            solved: false,
-        },
+    let icon_names = [
+        "fish", "octopus", "crab", "jellyfish",
+        "starfish", "turtle", "whale", "seahorse",
     ];
 
-    let mut tiles: Vec<TileData> = memory_tiles.to_vec();
-    tiles.extend(tiles.clone());
+    let memory_tiles: Vec<TileData> = icon_names
+        .iter()
+        .map(|name| TileData {
+            image: Image::load_from_path(Path::new(&format!("ui/icons/{name}.png")))
+                .unwrap_or_default(),
+            image_visible: false,
+            solved: false,
+        })
+        .collect();
+
+    let mut tiles = memory_tiles.clone();
+    tiles.extend(memory_tiles);
 
     let mut rng = rand::thread_rng();
-
     tiles.shuffle(&mut rng);
     tiles
 }

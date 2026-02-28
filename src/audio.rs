@@ -30,7 +30,7 @@ use {std::cell::RefCell, web_sys::HtmlAudioElement};
 /// 根据编译目标自动选择适当的后端实现。
 pub struct AudioManager {
     #[cfg(feature = "desktop")]
-    _stream: OutputStream,
+    _stream: Option<OutputStream>,
     #[cfg(feature = "desktop")]
     background_sink: Arc<Mutex<Option<Sink>>>,
     #[cfg(feature = "desktop")]
@@ -46,28 +46,37 @@ impl AudioManager {
     /// 创建新的音频管理器
     ///
     /// # 返回
-    /// - `Ok(AudioManager)`: 成功创建的音频管理器
-    /// - `Err(Box<dyn std::error::Error>)`: 初始化失败的错误
-    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+    /// - `AudioManager`: 音频管理器实例。如果音频系统不可用，返回静默模式的管理器。
+    pub fn new() -> Self {
         #[cfg(feature = "desktop")]
         {
-            let (_stream, stream_handle) = OutputStream::try_default()?;
-            let background_sink = Sink::try_new(&stream_handle)?;
-            let effects_sink = Sink::try_new(&stream_handle)?;
-
-            Ok(AudioManager {
-                _stream,
-                background_sink: Arc::new(Mutex::new(Some(background_sink))),
-                effects_sink: Arc::new(Mutex::new(Some(effects_sink))),
-            })
+            match OutputStream::try_default() {
+                Ok((_stream, stream_handle)) => {
+                    let background_sink = Sink::try_new(&stream_handle).ok();
+                    let effects_sink = Sink::try_new(&stream_handle).ok();
+                    AudioManager {
+                        _stream: Some(_stream),
+                        background_sink: Arc::new(Mutex::new(background_sink)),
+                        effects_sink: Arc::new(Mutex::new(effects_sink)),
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Audio system unavailable: {}", e);
+                    AudioManager {
+                        _stream: None,
+                        background_sink: Arc::new(Mutex::new(None)),
+                        effects_sink: Arc::new(Mutex::new(None)),
+                    }
+                }
+            }
         }
 
         #[cfg(feature = "wasm")]
         {
-            Ok(AudioManager {
+            AudioManager {
                 background_audio: RefCell::new(None),
                 match_sound_audio: RefCell::new(None),
-            })
+            }
         }
 
         #[cfg(not(any(feature = "desktop", feature = "wasm")))]

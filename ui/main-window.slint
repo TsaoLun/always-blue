@@ -143,11 +143,12 @@ export component MainWindow inherits Window {
     callback check_if_pair_solved();
     in property <bool> disable_tiles;
     in-out property <[TileData]> memory_tiles;
+    in-out property <bool> game_completed: false;
 
     if current_page == Page.home: HomePage {
         start_game => {
             root.current_page = Page.game;
-            root.start_background_music();
+            root.start_game_session();
         }
         open_github => {
             // 在网页环境中打开 GitHub 链接
@@ -192,6 +193,99 @@ export component MainWindow inherits Window {
                 clicked => {
                     root.current_page = Page.home;
                     root.stop_background_music();
+                    root.game_completed = false;
+                }
+            }
+        }
+    }
+
+    // 胜利庆祝界面
+    if current_page == Page.game && game_completed: Rectangle {
+        width: 100%;
+        height: 100%;
+        background: #00000088;
+
+        // 阻止点击穿透到游戏区域
+        TouchArea {}
+
+        Rectangle {
+            width: min(root.width * 0.8, 300px);
+            height: 220px;
+            x: (parent.width - self.width) / 2;
+            y: (parent.height - self.height) / 2;
+            background: white;
+            border-radius: 16px;
+            drop-shadow-blur: 20px;
+            drop-shadow-color: #00000040;
+
+            VerticalLayout {
+                alignment: center;
+                spacing: 12px;
+                padding: 24px;
+
+                Text {
+                    text: "🎉 Congratulations!";
+                    font-size: 22px;
+                    color: #2c3e50;
+                    horizontal-alignment: center;
+                    font-weight: 700;
+                }
+
+                Text {
+                    text: "You matched all pairs!";
+                    font-size: 15px;
+                    color: #7f8c8d;
+                    horizontal-alignment: center;
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    spacing: 12px;
+                    padding-top: 8px;
+
+                    Rectangle {
+                        width: 110px;
+                        height: 38px;
+                        background: #3960D5;
+                        border-radius: 8px;
+
+                        Text {
+                            text: "Play Again";
+                            color: white;
+                            font-size: 14px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+
+                        TouchArea {
+                            clicked => {
+                                root.start_game_session();
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        width: 110px;
+                        height: 38px;
+                        background: #34495E;
+                        border-radius: 8px;
+
+                        Text {
+                            text: "← Home";
+                            color: white;
+                            font-size: 14px;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+
+                        TouchArea {
+                            clicked => {
+                                root.current_page = Page.home;
+                                root.stop_background_music();
+                                root.game_completed = false;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -200,8 +294,8 @@ export component MainWindow inherits Window {
     // GitHub 页面打开回调
     callback open_github_page();
 
-    // 音频回调
-    callback start_background_music();
+    // 游戏与音频回调
+    callback start_game_session();
     callback stop_background_music();
     callback play_match_sound();
 }

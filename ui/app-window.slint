@@ -64,16 +64,7 @@ export component GameWindow inherits Rectangle {
     in property <bool> disable_tiles;
 
 
-    in-out property <[TileData]> memory_tiles: [
-        {image: @image-url("icons/fish.png")},
-        {image: @image-url("icons/octopus.png")},
-        {image: @image-url("icons/crab.png")},
-        {image: @image-url("icons/jellyfish.png")},
-        {image: @image-url("icons/starfish.png")},
-        {image: @image-url("icons/turtle.png")},
-        {image: @image-url("icons/whale.png")},
-        {image: @image-url("icons/seahorse.png")},
-    ];
+    in-out property <[TileData]> memory_tiles: [];
     
     // 游戏区域容器
     Rectangle {
