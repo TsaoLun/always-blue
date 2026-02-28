@@ -79,10 +79,15 @@
         
         .loading-text {
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 500;
             text-align: center;
             opacity: 0.9;
+            white-space: pre-line;
+            max-width: 320px;
+            line-height: 1.6;
+            font-style: italic;
+            transition: opacity 0.3s ease;
         }
         
         @keyframes spin {
@@ -98,17 +103,37 @@
     <!-- Loading screen -->
     <div id="loading" class="loading-container">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Loading Memory Game...</div>
+        <div class="loading-text" id="loading-quote"></div>
     </div>
     
     <!-- canvas required by the Slint runtime -->
     <canvas id="canvas"></canvas>
     <script type="module">
+        // 名言列表
+        const quotes = [
+            '"Explore first, then plan, then code."\n— Claude Code',
+            '"Focus is a matter of deciding what things you\'re not going to do."\n— Steve Jobs',
+            '"The best way to predict the future is to invent it."\n— Alan Kay',
+            '"The purpose of computing is insight, not numbers."\n— Richard Hamming',
+            '"All models are wrong, but some are useful."\n— George Box',
+            '"Write programs that do one thing and do it well."\n— Doug McIlroy',
+            '"One of my most productive days was throwing away 1000 lines of code."\n— Ken Thompson',
+        ];
+
+        // 随机展示名言
+        const quoteEl = document.getElementById('loading-quote');
+        function showRandomQuote() {
+            quoteEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
+        }
+        showRandomQuote();
+        const quoteInterval = setInterval(showRandomQuote, 5000);
+
         // 获取 loading 元素
         const loadingElement = document.getElementById('loading');
         
         // 隐藏 loading 的函数
         function hideLoading() {
+            clearInterval(quoteInterval);
             loadingElement.classList.add('hidden');
         }
         
