@@ -1,7 +1,7 @@
-//! WASM库入口点
+//! WASM Library Entry Point
 //!
-//! 此文件作为WASM构建的入口点，导出必要的函数供JavaScript调用。
-//! 桌面版本使用main.rs作为二进制入口，WASM版本使用此文件作为库入口。
+//! This file is the entry point for WASM builds, exporting necessary functions for JavaScript calls.
+//! The desktop version uses main.rs as the binary entry point, while the WASM version uses this file as the library entry point.
 
 use slint::ComponentHandle;
 
@@ -10,10 +10,10 @@ slint::include_modules!();
 mod audio;
 mod game;
 
-/// WASM入口函数
+/// WASM entry function
 ///
-/// 初始化应用程序并返回主窗口。
-/// 此函数由JavaScript调用以启动应用。
+/// Initializes the application and returns the main window.
+/// This function is called by JavaScript to start the app.
 #[cfg(feature = "wasm")]
 #[wasm_bindgen::prelude::wasm_bindgen(start)]
 pub fn start_app() -> Result<(), wasm_bindgen::JsValue> {
@@ -21,10 +21,10 @@ pub fn start_app() -> Result<(), wasm_bindgen::JsValue> {
         wasm_bindgen::JsValue::from_str(&format!("Failed to create main window: {:?}", e))
     })?;
 
-    // 初始化游戏
+    // Initialize game
     crate::game::init(&main_window);
 
-    // 处理 GitHub 页面打开
+    // Handle GitHub page open
     main_window.on_open_github_page(move || {
         if let Some(window) = web_sys::window() {
             let _ = window.open_with_url("https://github.com/tsaolun");
@@ -36,15 +36,15 @@ pub fn start_app() -> Result<(), wasm_bindgen::JsValue> {
         .map_err(|e| wasm_bindgen::JsValue::from_str(&format!("Application error: {:?}", e)))
 }
 
-/// 获取应用版本信息
+/// Get application version information
 ///
-/// 返回当前应用的版本字符串。
+/// Returns the current application version string.
 #[cfg_attr(feature = "wasm", wasm_bindgen::prelude::wasm_bindgen)]
 pub fn get_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-/// 测试函数，用于验证WASM模块正常工作
+/// Test function to verify WASM module works correctly
 #[cfg_attr(feature = "wasm", wasm_bindgen::prelude::wasm_bindgen)]
 pub fn test_add(a: i32, b: i32) -> i32 {
     a + b

@@ -1,15 +1,15 @@
-//! 音频管理模块
+//! Audio management module
 //!
-//! 提供跨平台的音频播放功能，支持：
-//! - 桌面平台：使用rodio库
-//! - WASM平台：使用Web Audio API
+//! Provides cross-platform audio playback capabilities, supporting:
+//! - Desktop platform: uses rodio library
+//! - WASM platform: uses Web Audio API
 //!
-//! 模块自动根据目标平台选择适当的实现。
+//! The module automatically selects the appropriate implementation based on the target platform.
 
-// 标准库导入
+// Standard library imports
 use std::sync::{Arc, Mutex};
 
-// 平台特定导入
+// Platform specific imports
 #[cfg(feature = "desktop")]
 use {
     rodio::{Decoder, OutputStream, Sink, Source},
@@ -21,13 +21,13 @@ use {
 #[cfg(feature = "wasm")]
 use {std::cell::RefCell, web_sys::HtmlAudioElement};
 
-/// 音频管理器
+/// Audio Manager
 ///
-/// 负责管理游戏中的所有音频播放，包括：
-/// - 背景音乐
-/// - 音效（匹配成功音效等）
+/// Responsible for managing all audio playback in the game, including:
+/// - Background music
+/// - Sound effects (match success sound, etc.)
 ///
-/// 根据编译目标自动选择适当的后端实现。
+/// Automatically selects the appropriate backend implementation based on compilation target.
 pub struct AudioManager {
     #[cfg(feature = "desktop")]
     _stream: Option<OutputStream>,
@@ -43,10 +43,10 @@ pub struct AudioManager {
 }
 
 impl AudioManager {
-    /// 创建新的音频管理器
+    /// Create a new audio manager
     ///
-    /// # 返回
-    /// - `AudioManager`: 音频管理器实例。如果音频系统不可用，返回静默模式的管理器。
+    /// # Returns
+    /// - `AudioManager`: Audio manager instance. Returns a silent mode manager if audio system is unavailable.
     pub fn new() -> Self {
         #[cfg(feature = "desktop")]
         {
@@ -81,14 +81,14 @@ impl AudioManager {
 
         #[cfg(not(any(feature = "desktop", feature = "wasm")))]
         {
-            compile_error!("必须启用 'desktop' 或 'wasm' 特性之一");
+            compile_error!("Must enable either 'desktop' or 'wasm' feature");
         }
     }
 
-    /// 开始播放背景音乐
+    /// Start playing background music
     ///
-    /// 背景音乐会在后台循环播放，音量设置为30%。
-    /// 在WASM环境中，会自动创建HTML5音频元素。
+    /// Background music loops in the background with volume set to 30%.
+    /// In WASM environment, it automatically creates HTML5 audio elements.
     pub fn start_background_music(&self) {
         #[cfg(feature = "desktop")]
         {
@@ -115,7 +115,7 @@ impl AudioManager {
                 };
 
                 sink.append(looped_source);
-                sink.set_volume(0.3); // 设置较低音量作为背景音乐
+                sink.set_volume(0.3); // Set lower volume for background music
                 sink.play();
                 println!("Background music started");
             });
@@ -127,10 +127,10 @@ impl AudioManager {
         }
     }
 
-    /// 停止播放背景音乐
+    /// Stop playing background music
     ///
-    /// 停止当前正在播放的背景音乐。
-    /// 在WASM环境中，会暂停并重置音频元素。
+    /// Stops the currently playing background music.
+    /// In WASM environment, it pauses and resets the audio element.
     pub fn stop_background_music(&self) {
         #[cfg(feature = "desktop")]
         {
@@ -151,16 +151,16 @@ impl AudioManager {
         }
     }
 
-    /// 播放匹配成功音效
+    /// Play match success sound effect
     ///
-    /// 播放匹配成功时的提示音效，音量设置为70%。
-    /// 支持多种音频格式（wav, mp3, ogg），按顺序尝试加载。
+    /// Plays a prompt sound effect when a match is successful, volume set to 70%.
+    /// Supports multiple audio formats (wav, mp3, ogg), trying to load in order.
     pub fn play_match_sound(&self) {
         #[cfg(feature = "desktop")]
         {
             let effects_sink = self.effects_sink.clone();
             thread::spawn(move || {
-                // 尝试播放 beep.wav，如果失败则尝试其他格式
+                // Try playing beep.wav, if failed try other formats
                 let audio_files = ["raw/beep.wav", "raw/beep.mp3", "raw/beep.ogg"];
 
                 for file_path in &audio_files {
@@ -181,8 +181,8 @@ impl AudioManager {
                     };
 
                     sink.append(source);
-                    sink.set_volume(0.7); // 音效音量稍高
-                    return; // 成功播放就退出
+                    sink.set_volume(0.7); // Sound effect volume slightly higher
+                    return; // Exit on success
                 }
                 eprintln!("Failed to load any beep sound file");
             });
@@ -194,12 +194,12 @@ impl AudioManager {
         }
     }
 
-    // 预加载音效（WASM环境）
+    // Preload sound effects (WASM environment)
     #[cfg(feature = "wasm")]
-    /// 预加载匹配音效（仅WASM环境）
+    /// Preload match sound effect (WASM environment only)
     ///
-    /// 在WASM环境中预加载音效文件，减少首次播放时的延迟。
-    /// 桌面环境此方法为空操作。
+    /// Preloads sound effect files in WASM environment to reduce latency on first play.
+    /// This method is a no-op in desktop environment.
     pub fn preload_match_sound(&self) {
         use wasm_bindgen::JsCast;
         use web_sys::window;
@@ -219,21 +219,21 @@ impl AudioManager {
         let audio = audio.dyn_into::<HtmlAudioElement>().unwrap();
         audio.set_src("raw/beep.wav");
         audio.set_volume(0.7);
-        audio.set_preload("auto"); // 预加载音频
+        audio.set_preload("auto"); // Preload audio
 
-        // 存储预加载的音频引用
+        // Store preloaded audio reference
         *self.match_sound_audio.borrow_mut() = Some(audio);
 
         web_sys::console::log_1(&"Match sound preloaded (WASM)".into());
     }
 
-    // 非WASM环境的空实现，保持API一致性
+    // Empty implementation for non-WASM environment to maintain API consistency
     #[cfg(feature = "desktop")]
     pub fn preload_match_sound(&self) {
-        // 非WASM环境不需要预加载
+        // Non-WASM environments don't need preloading
     }
 
-    // WASM环境下的音频实现
+    // Audio implementation for WASM environment
     #[cfg(feature = "wasm")]
     fn start_web_background_music(&self) {
         use wasm_bindgen::JsCast;
@@ -256,10 +256,10 @@ impl AudioManager {
         audio.set_loop(true);
         audio.set_volume(0.3);
 
-        // 尝试播放音频
+        // Try playing audio
         let _ = audio.play();
 
-        // 存储音频引用以便后续控制
+        // Store audio reference for later control
         *self.background_audio.borrow_mut() = Some(audio);
 
         web_sys::console::log_1(&"Background music started (WASM)".into());
@@ -277,16 +277,16 @@ impl AudioManager {
 
     #[cfg(feature = "wasm")]
     fn play_web_match_sound(&self) {
-        // 首先尝试使用预加载的音频
+        // First try using preloaded audio
         if let Some(audio) = self.match_sound_audio.borrow().as_ref() {
-            // 重置音频位置并播放
+            // Reset audio position and play
             audio.set_current_time(0.0);
             let _ = audio.play();
             web_sys::console::log_1(&"Match sound played from preloaded audio (WASM)".into());
             return;
         }
 
-        // 如果没有预加载音频，则创建新的音频元素（兜底方案）
+        // If no preloaded audio, create new audio element (fallback)
         use wasm_bindgen::JsCast;
         use web_sys::window;
 

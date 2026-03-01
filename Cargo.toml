@@ -14,15 +14,15 @@ wasm-opt = ["-Oz", "--enable-mutable-globals"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# 公共依赖
+# Common dependencies
 rand = "0.8"
 slint = "1.15.1"
 
-# 桌面特性依赖
+# Desktop feature dependencies
 open = { version = "5.0", optional = true }
 rodio = { version = "0.17", optional = true }
 
-# WASM特性依赖
+# WASM feature dependencies
 wasm-bindgen = { version = "0.2", optional = true }
 getrandom = { version = "0.2.2", optional = true, features = ["js"] }
 web-sys = { version = "0.3", optional = true, features = [
@@ -36,18 +36,18 @@ js-sys = { version = "0.3", optional = true }
 [build-dependencies]
 slint-build = "1.15.1"
 
-# WASM构建需要cdylib类型
+# WASM build requires cdylib type
 [lib]
 name = "always_blue_wasm"
 path = "src/lib.rs"
 crate-type = ["cdylib"]
 
-# 优化WASM体积
+# Optimize WASM size
 [profile.release]
-opt-level = "s"  # 优化体积而非速度
-lto = true       # 链接时优化
-debug = false    # 移除调试信息
-panic = "abort"  # 使用abort而非unwind
+opt-level = "s"  # Optimize for size rather than speed
+lto = true       # Link Time Optimization
+debug = false    # Remove debug info
+panic = "abort"  # Use abort instead of unwind
 codegen-units = 1 # 减少代码生成单元以提高优化效果
 
 # WASM特定优化

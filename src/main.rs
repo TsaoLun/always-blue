@@ -1,24 +1,24 @@
-//! 桌面版本入口点
+//! Desktop entry point
 //!
-//! 此文件仅用于桌面版本（非WASM）的二进制入口。
-//! WASM版本使用lib.rs作为库入口。
+//! This file is only used for the desktop version (non-WASM) binary entry point.
+//! The WASM version uses lib.rs as the library entry point.
 
 slint::include_modules!();
 
 mod audio;
 mod game;
 
-/// 桌面版本主函数
+/// Desktop version main function
 ///
-/// 桌面应用程序的入口点，仅在启用desktop特性时编译。
+/// The entry point for desktop applications, compiled only when the desktop feature is enabled.
 #[cfg(feature = "desktop")]
 fn main() -> Result<(), slint::PlatformError> {
     let main_window = MainWindow::new()?;
 
-    // 初始化游戏
+    // Initialize game
     game::init(&main_window);
 
-    // 处理 GitHub 页面打开
+    // Handle GitHub page opening
     main_window.on_open_github_page(move || {
         if let Err(e) = open::that("https://github.com/tsaolun") {
             eprintln!("Failed to open URL: {}", e);
@@ -28,12 +28,12 @@ fn main() -> Result<(), slint::PlatformError> {
     main_window.run()
 }
 
-/// WASM版本的空主函数
+/// Empty main function for WASM version
 ///
-/// 在启用wasm特性时，应用程序通过lib.rs中的start_app函数启动。
-/// 此函数仅用于满足Rust的二进制入口要求。
+/// When the wasm feature is enabled, the application starts via the start_app function in lib.rs.
+/// This function is only used to satisfy Rust's binary entry requirement.
 #[cfg(feature = "wasm")]
 fn main() {
-    // WASM版本通过lib.rs中的start_app函数启动
-    // 此函数为空，确保编译通过
+    // The WASM version starts via the start_app function in lib.rs
+    // This function is empty ensuring compilation passes
 }

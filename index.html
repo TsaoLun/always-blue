@@ -1,173 +1,211 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Memory Game</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        
-        #canvas {
-            max-width: min(100vw, 400px);
-            max-height: min(100vh, 500px);
-            width: 400px;
-            height: 500px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: block;
-            margin: 0 auto;
-        }
-        
-        /* 移动设备优化 */
-        @media (max-width: 768px) {
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Memory Game</title>
+        <style>
             body {
-                padding: 10px;
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    Oxygen, Ubuntu, Cantarell, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden;
                 box-sizing: border-box;
             }
-            
+
             #canvas {
-                max-width: calc(100vw - 20px);
-                max-height: calc(100vh - 20px);
-                width: auto;
-                height: auto;
-                border-radius: 5px;
+                max-width: min(100vw, 400px);
+                max-height: min(100vh, 500px);
+                width: 400px;
+                height: 500px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                display: block;
+                margin: 0 auto;
             }
-        }
-        
-        /* 防止在移动设备上的双击缩放 */
-        * {
-            touch-action: manipulation;
-        }
-        
-        /* Loading 样式 */
-        .loading-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
-        
-        .loading-text {
-            color: white;
-            font-size: 16px;
-            font-weight: 500;
-            text-align: center;
-            opacity: 0.9;
-            white-space: pre-line;
-            max-width: 320px;
-            line-height: 1.6;
-            font-style: italic;
-            transition: opacity 0.3s ease;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .loading-container.hidden {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <!-- Loading screen -->
-    <div id="loading" class="loading-container">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loading-quote"></div>
-    </div>
-    
-    <!-- canvas required by the Slint runtime -->
-    <canvas id="canvas"></canvas>
-    <script type="module">
-        // 名言列表
-        const quotes = [
-            '加载太慢？把🪜打开试试吧。',
-            '"Explore first, then plan, then code."\n— Claude Code',
-            '"Explore first, then plan, then code."\n— Claude Code',
-            '"Focus is a matter of deciding what things you\'re not going to do."\n— John Carmack',
-            '"The best way to predict the future is to invent it."\n— Alan Kay',
-            '"The purpose of computing is insight, not numbers."\n— Richard Hamming',
-            '"All models are wrong, but some are useful."\n— George Box',
-            '"Write programs that do one thing and do it well."\n— Doug McIlroy',
-            '"One of my most productive days was throwing away 1000 lines of code."\n— Ken Thompson',
-        ];
 
-        // 随机展示名言
-        const quoteEl = document.getElementById('loading-quote');
-        function showRandomQuote() {
-            quoteEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
-        }
-        showRandomQuote();
-        const quoteInterval = setInterval(showRandomQuote, 5000);
+            /* Mobile device optimization */
+            @media (max-width: 768px) {
+                body {
+                    padding: 10px;
+                    box-sizing: border-box;
+                }
 
-        // 获取 loading 元素
-        const loadingElement = document.getElementById('loading');
-        
-        // 隐藏 loading 的函数
-        function hideLoading() {
-            clearInterval(quoteInterval);
-            loadingElement.classList.add('hidden');
-        }
-        
-        // 添加时间戳参数强制刷新 WASM 文件
-        const timestamp = Date.now();
-        const wasmUrl = `./pkg/always_blue_wasm.js?v=${timestamp}`;
-        
-        try {
-            console.log('Loading WASM module from:', wasmUrl);
-            // import the generated file with version parameter
-            const module = await import(wasmUrl);
-            
-            console.log('Initializing WASM...');
-            await module.default(`./pkg/always_blue_wasm_bg.wasm?v=${timestamp}`);
-            
-            console.log('Starting main application...');
-            module.main();
-            
-            // WASM 加载完成后隐藏 loading
-            hideLoading();
-            
-        } catch (error) {
-            // 暂时过滤 __wbindgen_throw
-            if (error.stack && error.stack.includes('__wbindgen_throw')) {
-                console.log('Ignoring __wbindgen_throw error:', error);
-            } else {
-                console.error('Failed to load WASM:', error);
-                console.error('Error details:', error.message);
+                #canvas {
+                    max-width: calc(100vw - 20px);
+                    max-height: calc(100vh - 20px);
+                    width: auto;
+                    height: auto;
+                    border-radius: 5px;
+                }
             }
-            // 出错时也隐藏 loading，可以考虑显示错误信息
-            hideLoading();
-        }
-    </script>
-</body>
+
+            /* Prevent double-tap zoom on mobile devices */
+            * {
+                touch-action: manipulation;
+            }
+
+            /* Loading styles */
+            .loading-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+
+            .loading-spinner {
+                width: 50px;
+                height: 50px;
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                border-top-color: #fff;
+                animation: spin 1s ease-in-out infinite;
+                margin-bottom: 20px;
+            }
+
+            .loading-text {
+                color: white;
+                font-size: 16px;
+                font-weight: 500;
+                text-align: center;
+                opacity: 0.9;
+                white-space: pre-line;
+                max-width: 320px;
+                line-height: 1.6;
+                font-style: italic;
+                transition: opacity 0.3s ease;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .loading-container.hidden {
+                display: none;
+            }
+
+            .footer {
+                position: absolute;
+                bottom: 20px;
+                text-align: center;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 14px;
+                width: 100%;
+                z-index: 10;
+            }
+
+            .footer a {
+                color: #fff;
+                text-decoration: none;
+                font-weight: bold;
+                transition: opacity 0.2s;
+            }
+
+            .footer a:hover {
+                opacity: 0.8;
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Loading screen -->
+        <div id="loading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loading-quote"></div>
+        </div>
+
+        <!-- canvas required by the Slint runtime -->
+        <canvas id="canvas"></canvas>
+
+        <div class="footer">
+            Powered by <a href="https://slint.dev" target="_blank">Slint</a> ⚡ | 
+            Source: <a href="https://github.com/tsaolun/always-blue" target="_blank">GitHub</a> ❤️
+        </div>
+
+        <script type="module">
+            // Quotes list
+            const quotes = [
+                "Loading too slow? Try turning on your 🪜.",
+                '"Explore first, then plan, then code."\n— Claude Code',
+                '"Explore first, then plan, then code."\n— Claude Code',
+                '"Focus is a matter of deciding what things you\'re not going to do."\n— John Carmack',
+                '"The best way to predict the future is to invent it."\n— Alan Kay',
+                '"The purpose of computing is insight, not numbers."\n— Richard Hamming',
+                '"All models are wrong, but some are useful."\n— George Box',
+                '"Write programs that do one thing and do it well."\n— Doug McIlroy',
+                '"One of my most productive days was throwing away 1000 lines of code."\n— Ken Thompson',
+            ];
+
+            // Randomly show quote
+            const quoteEl = document.getElementById("loading-quote");
+            function showRandomQuote() {
+                quoteEl.textContent =
+                    quotes[Math.floor(Math.random() * quotes.length)];
+            }
+            showRandomQuote();
+            const quoteInterval = setInterval(showRandomQuote, 6000);
+
+            // Get loading element
+            const loadingElement = document.getElementById("loading");
+
+            // Function to hide loading
+            function hideLoading() {
+                clearInterval(quoteInterval);
+                loadingElement.classList.add("hidden");
+            }
+
+            // Add timestamp parameter to force refresh WASM file
+            const timestamp = Date.now();
+            const wasmUrl = `./pkg/always_blue_wasm.js?v=${timestamp}`;
+
+            try {
+                console.log("Loading WASM module from:", wasmUrl);
+                // import the generated file with version parameter
+                const module = await import(wasmUrl);
+
+                console.log("Initializing WASM...");
+                await module.default(
+                    `./pkg/always_blue_wasm_bg.wasm?v=${timestamp}`,
+                );
+
+                console.log("Starting main application...");
+                module.main();
+
+                // Hide loading after WASM loaded
+                hideLoading();
+            } catch (error) {
+                // Temporarily filter __wbindgen_throw
+                if (error.stack && error.stack.includes("__wbindgen_throw")) {
+                    console.log("Ignoring __wbindgen_throw error:", error);
+                } else {
+                    console.error("Failed to load WASM:", error);
+                    console.error("Error details:", error.message);
+                }
+                // Hide loading on error too, consider showing error message
+                hideLoading();
+            }
+        </script>
+    </body>
 </html>

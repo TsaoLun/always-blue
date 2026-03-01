@@ -1,20 +1,20 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * 测试函数，用于验证WASM模块正常工作
+ * Test function to verify WASM module works correctly
  */
 export function test_add(a: number, b: number): number;
 /**
- * WASM入口函数
+ * WASM entry function
  *
- * 初始化应用程序并返回主窗口。
- * 此函数由JavaScript调用以启动应用。
+ * Initializes the application and returns the main window.
+ * This function is called by JavaScript to start the app.
  */
 export function start_app(): void;
 /**
- * 获取应用版本信息
+ * Get application version information
  *
- * 返回当前应用的版本字符串。
+ * Returns the current application version string.
  */
 export function get_version(): string;
 

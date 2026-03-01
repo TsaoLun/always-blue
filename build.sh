@@ -1,22 +1,23 @@
 #!/bin/bash
 
-set -e  # 出错时立即退出
+# Exit immediately if a command exits with a non-zero status
+set -e
 
 echo "=== Building WASM ==="
 echo "Starting build at $(date)"
 
-# 清理之前的构建
+# Clean up previous build
 if [ -d "pkg" ]; then
     echo "Cleaning previous build..."
     rm -rf pkg/*
 fi
 
-# 构建 WASM
+# Build WASM
 echo "Running wasm-pack build with optimizations..."
 wasm-pack build --target web --out-dir pkg --release -- --features wasm --no-default-features
 rm -f pkg/.gitignore
 
-# 复制音频文件到pkg目录
+# Copy audio files to pkg directory
 echo "Copying audio files..."
 if [ ! -d "pkg/raw" ]; then
     mkdir -p pkg/raw
@@ -24,7 +25,7 @@ fi
 cp raw/moments.mp3 pkg/raw/
 cp raw/beep.wav pkg/raw/
 
-# 优化WASM文件大小
+# Optimize WASM file size
 echo "Optimizing WASM file size..."
 if command -v wasm-opt >/dev/null 2>&1; then
     echo "Running wasm-opt for further optimization..."
@@ -33,7 +34,7 @@ else
     echo "wasm-opt not found, skipping additional optimization"
 fi
 
-# 添加Brotli压缩
+# Add Brotli compression
 echo "Creating Brotli compressed versions..."
 if command -v brotli >/dev/null 2>&1; then
     echo "Compressing WASM with Brotli..."
@@ -51,11 +52,11 @@ else
     echo "brotli not found, skipping compression"
 fi
 
-# 显示文件大小
+# Display file size
 echo "WASM file size:"
 ls -lh pkg/always_blue_wasm_bg.wasm
 
-# 检查构建结果
+# Check build results
 if [ ! -f "pkg/always_blue_wasm.js" ]; then
     echo "Error: Build failed - JavaScript file not found"
     exit 1
@@ -66,7 +67,7 @@ if [ ! -f "pkg/always_blue_wasm_bg.wasm" ]; then
     exit 1
 fi
 
-# 添加构建时间到文件中，帮助调试
+# Add build timestamp to file to help debugging
 echo "// Built at $(date)" >> pkg/always_blue_wasm.js
 
 echo "=== Build complete! ==="

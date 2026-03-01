@@ -17,7 +17,7 @@ component HomePage inherits Rectangle {
         width: 100%;
         height: 100%;
 
-        // 头像区域 (右上角)
+        // Avatar area (top right)
         Rectangle {
             x: parent.width - 155px;
             y: 20px;
@@ -34,7 +34,7 @@ component HomePage inherits Rectangle {
             }
         }
 
-        // 介绍文字区域 (左侧，头像下方)
+        // Intro text area (left side, below avatar)
         Rectangle {
             x: 40px;
             y: 180px;
@@ -74,14 +74,14 @@ component HomePage inherits Rectangle {
             }
         }
 
-        // 社交图标区域 (右下角)
+        // Social icons area (bottom right)
         Rectangle {
             x: parent.width - 120px;
             y: parent.height - 50px;
             width: 120px;
             height: 40px;
 
-            // GitHub 图标
+            // GitHub Icon
             Rectangle {
                 x: 0;
                 y: 0;
@@ -104,7 +104,7 @@ component HomePage inherits Rectangle {
                 }
             }
 
-            // Game 图标
+            // Game Icon
             Rectangle {
                 x: 60px;
                 y: 0;
@@ -139,7 +139,7 @@ export component MainWindow inherits Window {
 
     in-out property <Page> current_page: Page.home;
 
-    // 游戏相关的属性和回调
+    // Game related properties and callbacks
     callback check_if_pair_solved();
     in property <bool> disable_tiles;
     in-out property <[TileData]> memory_tiles;
@@ -151,8 +151,8 @@ export component MainWindow inherits Window {
             root.start_game_session();
         }
         open_github => {
-            // 在网页环境中打开 GitHub 链接
-            // 这个回调将在 Rust 代码中处理
+            // Open GitHub link in web environment
+            // This callback is handled in Rust code
             root.open_github_page();
         }
     }
@@ -171,7 +171,7 @@ export component MainWindow inherits Window {
             root.play_match_sound();
         }
 
-        // 添加返回按钮
+        // Add back button
         Rectangle {
             x: 10px;
             y: 10px;
@@ -199,13 +199,13 @@ export component MainWindow inherits Window {
         }
     }
 
-    // 胜利庆祝界面
+    // Victory celebration screen
     if current_page == Page.game && game_completed: Rectangle {
         width: 100%;
         height: 100%;
         background: #00000088;
 
-        // 阻止点击穿透到游戏区域
+        // Prevent clicks passing through to game area
         TouchArea {}
 
         Rectangle {
@@ -291,10 +291,10 @@ export component MainWindow inherits Window {
         }
     }
 
-    // GitHub 页面打开回调
+    // GitHub page open callback
     callback open_github_page();
 
-    // 游戏与音频回调
+    // Game and audio callbacks
     callback start_game_session();
     callback stop_background_music();
     callback play_match_sound();

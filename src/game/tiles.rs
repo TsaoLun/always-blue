@@ -1,9 +1,9 @@
-//! 记忆卡片生成模块
+//! Memory card generation module
 //!
-//! 负责生成游戏中的记忆卡片，包括：
-//! - 加载卡片图片
-//! - 创建卡片对
-//! - 随机打乱卡片顺序
+//! Responsible for generating memory cards in the game, including:
+//! - Loading card images
+//! - Creating card pairs
+//! - Randomly shuffling card order
 
 use std::path::Path;
 
@@ -11,13 +11,13 @@ use crate::TileData;
 use rand::seq::SliceRandom;
 use slint::Image;
 
-/// 生成记忆卡片
+/// Generate memory cards
 ///
-/// 创建8对不同的海洋生物卡片，每对包含相同的图片。
-/// 卡片会被随机打乱顺序，确保每次游戏都有不同的布局。
+/// Creates 8 pairs of different ocean creature cards, each pair containing the same image.
+/// Cards are randomly shuffled to ensure a different layout for each game.
 ///
-/// # 返回
-/// - `Vec<TileData>`: 包含16张卡片的向量，每对卡片有相同的图片
+/// # Returns
+/// - `Vec<TileData>`: Vector containing 16 cards, each pair has the same image
 pub fn gen() -> Vec<TileData> {
     let icon_names = [
         "fish", "octopus", "crab", "jellyfish",

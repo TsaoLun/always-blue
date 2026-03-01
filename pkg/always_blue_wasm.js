@@ -248,7 +248,7 @@ function debugString(val) {
     return className;
 }
 /**
- * 测试函数，用于验证WASM模块正常工作
+ * Test function to verify WASM module works correctly
  * @param {number} a
  * @param {number} b
  * @returns {number}
@@ -259,19 +259,19 @@ export function test_add(a, b) {
 }
 
 /**
- * WASM入口函数
+ * WASM entry function
  *
- * 初始化应用程序并返回主窗口。
- * 此函数由JavaScript调用以启动应用。
+ * Initializes the application and returns the main window.
+ * This function is called by JavaScript to start the app.
  */
 export function start_app() {
     wasm.start_app();
 }
 
 /**
- * 获取应用版本信息
+ * Get application version information
  *
- * 返回当前应用的版本字符串。
+ * Returns the current application version string.
  * @returns {string}
  */
 export function get_version() {
@@ -1899,4 +1899,4 @@ async function __wbg_init(module_or_path) {
 
 export { initSync };
 export default __wbg_init;
-// Built at Sat Feb 28 23:29:13 CST 2026
+// Built at Sun Mar  1 17:11:53 CST 2026

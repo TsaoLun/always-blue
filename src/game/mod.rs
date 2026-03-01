@@ -1,11 +1,11 @@
-//! 游戏逻辑模块
+//! Game logic module
 //!
-//! 包含游戏的核心逻辑，包括：
-//! - 游戏状态管理
-//! - 记忆卡片匹配逻辑
-//! - 音频回调处理
+//! Contains core game logic, including:
+//! - Game state management
+//! - Memory card matching logic
+//! - Audio callback handling
 //!
-//! 此模块负责初始化游戏并处理用户交互。
+//! This module is responsible for initializing the game and handling user interactions.
 
 mod tiles;
 use std::{rc::Rc, time::Duration};
@@ -14,21 +14,21 @@ use slint::{ComponentHandle, Model, Timer, VecModel};
 
 use crate::{audio::AudioManager, MainWindow, TileData};
 
-/// 初始化游戏
+/// Initialize game
 ///
-/// 设置游戏状态、绑定回调函数，并准备音频系统。
+/// Sets up game state, binds callback functions, and prepares audio system.
 ///
-/// # 参数
-/// - `main_window`: 主窗口引用，用于设置游戏状态和绑定回调
+/// # Arguments
+/// - `main_window`: Reference to main window, used to set game state and bind callbacks
 pub fn init(main_window: &MainWindow) {
-    // 创建音频管理器（初始化失败时自动降级为静默模式）
+    // Create audio manager (automatically degrades to silent mode if initialization fails)
     let audio_manager = Rc::new(AudioManager::new());
 
-    // 懒加载：初始化时创建空的卡片模型，开始游戏后才加载图片资源
+    // Lazy load: create empty card model at initialization, load image resources only after game starts
     let tiles_model = Rc::new(VecModel::from(Vec::<TileData>::new()));
     main_window.set_memory_tiles(tiles_model.clone().into());
 
-    // 克隆供各回调使用
+    // Clone for use in callbacks
     let tiles_model_for_start = tiles_model.clone();
 
     let main_window_weak = main_window.as_weak();
@@ -49,13 +49,13 @@ pub fn init(main_window: &MainWindow) {
                 t2.solved = true;
                 tiles_model.set_row_data(t1_idx, t1);
                 tiles_model.set_row_data(t2_idx, t2);
-                // 播放匹配成功音效
+                // Play match success sound
                 audio_manager_clone.play_match_sound();
 
-                // 胜利检测：检查是否所有卡片都已匹配
+                // Victory check: check if all cards are matched
                 if tiles_model.iter().all(|t| t.solved) {
                     if let Some(w) = main_window_weak_victory.upgrade() {
-                        // 延迟显示胜利界面，让最后一对匹配动画完成
+                        // Delay showing victory screen to let the last pair animation finish
                         Timer::single_shot(Duration::from_millis(500), move || {
                             w.set_game_completed(true);
                         });
@@ -77,17 +77,17 @@ pub fn init(main_window: &MainWindow) {
         }
     });
 
-    // 游戏会话回调：负责初始化/重置游戏状态并启动音频
+    // Game session callback: responsible for initializing/resetting game state and starting audio
     let main_window_weak_start = main_window.as_weak();
     let audio_manager_bg = audio_manager.clone();
     main_window.on_start_game_session(move || {
-        // 重置游戏状态
+        // Reset game state
         if let Some(w) = main_window_weak_start.upgrade() {
             w.set_game_completed(false);
             w.set_disable_tiles(false);
         }
 
-        // 懒加载：开始游戏时才生成卡片并加载图片资源
+        // Lazy load: generate cards and load image resources only when game starts
         let new_tiles = tiles::gen();
         while tiles_model_for_start.row_count() > 0 {
             tiles_model_for_start.remove(tiles_model_for_start.row_count() - 1);
@@ -96,7 +96,7 @@ pub fn init(main_window: &MainWindow) {
             tiles_model_for_start.push(tile);
         }
 
-        // 音频处理：先停止再启动，避免重复播放
+        // Audio processing: stop then start to avoid duplicate playback
         audio_manager_bg.stop_background_music();
         audio_manager_bg.start_background_music();
         audio_manager_bg.preload_match_sound();

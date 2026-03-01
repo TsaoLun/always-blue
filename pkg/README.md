@@ -1,220 +1,222 @@
-# Always Blue - Ocean Memory Game
+# Always Blue
 
-一个使用 Rust 和 Slint 构建的跨平台记忆配对游戏，支持桌面和 WebAssembly (WASM) 部署。
+A personal website built with Rust and Slint, featuring a hidden cross-platform memory matching game (Easter Egg) supporting desktop and WebAssembly (WASM) deployment.
 
-## 🎮 游戏介绍
+[中文文档](README_CN.md)
 
-Always Blue 是一款海洋主题的记忆配对游戏，玩家需要找到相同的海洋生物卡片。游戏包含：
+## 🎮 Introduction
 
-- **8 种可爱的海洋生物**：鱼、章鱼、螃蟹、水母、海星、海龟、鲸鱼、海马
-- **跨平台支持**：桌面应用和网页版本
-- **音频系统**：背景音乐和音效
-- **响应式界面**：适配不同屏幕尺寸
+Always Blue is a personal showcase site that includes an ocean-themed memory matching game as an Easter Egg. The project features:
 
-## 🚀 快速开始
+- **8 Cute Ocean Creatures**: Fish, Octopus, Crab, Jellyfish, Starfish, Sea Turtle, Whale, Seahorse
+- **Cross-Platform Support**: Desktop application and Web version
+- **Audio System**: Background music and sound effects
+- **Responsive UI**: Adapted for different screen sizes
 
-### 桌面版本
+## 🚀 Quick Start
+
+### Desktop Version
 
 ```bash
-# 克隆项目
+# Clone the repository
 git clone <repository-url>
 cd always-blue
 
-# 构建并运行（默认使用desktop特性，可手动修改为wasm)
+# Build and run (defaults to desktop feature)
 cargo run
-# 或显式指定特性
+# Or explicitly specify the feature
 cargo run --features desktop
 ```
 
-### Web 版本
+### Web Version
 
 ```bash
-# 构建 WASM（使用wasm特性）
+# Build WASM (uses wasm feature)
 ./build.sh
 
-# 启动本地服务器
+# Start local server
 deno task start
-# 或使用其他静态文件服务器
+# Or use any other static file server
 ```
 
-然后在浏览器中访问 `http://localhost:8000`
+Then visit `http://localhost:8000` in your browser.
 
-## 🛠️ 技术栈
+## 🛠️ Tech Stack
 
-- **Rust** - 系统编程语言
-- **Slint** - 声明式 UI 框架
-- **WASM** - WebAssembly 支持
-- **Rodio** - 桌面音频库
-- **Web Audio API** - 网页音频
+- **Rust** - Systems programming language
+- **Slint** - Declarative UI framework
+- **WASM** - WebAssembly support
+- **Rodio** - Desktop audio library
+- **Web Audio API** - Web audio
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 always-blue/
 ├── src/
-│   ├── main.rs          # 桌面版本入口点
-│   ├── lib.rs           # WASM 版本入口点
-│   ├── audio.rs         # 跨平台音频管理
-│   └── game/            # 游戏逻辑
-│       ├── mod.rs       # 游戏初始化
-│       └── tiles.rs     # 卡片生成
+│   ├── main.rs          # Desktop entry point
+│   ├── lib.rs           # WASM entry point
+│   ├── audio.rs         # Cross-platform audio management
+│   └── game/            # Game logic
+│       ├── mod.rs       # Game initialization
+│       └── tiles.rs     # Tile generation
 ├── ui/
-│   ├── main-window.slint # 主窗口定义
-│   ├── app-window.slint  # 游戏窗口定义
-│   └── icons/           # 游戏图标
-├── raw/                 # 音频资源
-├── pkg/                 # WASM 构建输出
-└── build.sh             # 构建脚本
+│   ├── main-window.slint # Main window definition
+│   ├── app-window.slint  # Game window definition
+│   └── icons/           # Game icons
+├── raw/                 # Audio resources
+├── pkg/                 # WASM build output
+└── build.sh             # Build script
 ```
 
-## 🔧 构建说明
+## 🔧 Build Instructions
 
-### 开发构建
+### Development Build
 
 ```bash
-# 桌面版本
+# Desktop version
 cargo build --features desktop
 
-# WASM版本（本地检查）
+# WASM version (local check)
 cargo build --features wasm --no-default-features
 ```
 
-### 发布构建
+### Release Build
 
 ```bash
-# 桌面版本
+# Desktop version
 cargo build --release --features desktop
 
-# WASM版本（使用build.sh脚本）
+# WASM version (using build.sh script)
 ./build.sh
 ```
 
-### WASM 构建
+### WASM Build details
 
 ```bash
-# 完整构建（包含优化和压缩）
+# Full build (includes optimization and compression)
 ./build.sh
 
-# 或手动构建
+# Or manual build
 wasm-pack build --target web --out-dir pkg --release -- --features wasm --no-default-features
 ```
 
-## 🌐 部署到 Web
+## 🌐 Deploy to Web
 
-构建完成后，`pkg` 目录包含：
+After building, the `pkg` directory contains:
 
-- `always_blue_wasm.js` - JavaScript 胶水代码
-- `always_blue_wasm_bg.wasm` - WASM 二进制文件
-- `always_blue_wasm.js.br` / `always_blue_wasm_bg.wasm.br` - Brotli 压缩版本
+- `always_blue_wasm.js` - JavaScript glue code
+- `always_blue_wasm_bg.wasm` - WASM binary file
+- `always_blue_wasm.js.br` / `always_blue_wasm_bg.wasm.br` - Brotli compressed versions
 
-将 `pkg` 目录、`index.html` 和 `raw` 目录一起部署到静态文件服务器。
+Deploy the `pkg` directory, `index.html`, and `raw` directory together to a static file server.
 
-## 🎵 音频功能
+## 🎵 Audio Features
 
-游戏包含完整的音频系统：
+The game includes a complete audio system:
 
-- **背景音乐**：游戏运行时播放
-- **匹配音效**：成功配对时播放
-- **跨平台支持**：
-  - 桌面：使用 Rodio 库
-  - 网页：使用 Web Audio API
+- **Background Music**: Plays while the game is running
+- **Match Sound**: Plays when a pair is successfully matched
+- **Cross-Platform Support**:
+  - Desktop: Uses Rodio library
+  - Web: Uses Web Audio API
 
-## 🎨 UI 特性
+## 🎨 UI Features
 
-- **响应式设计**：适配不同屏幕尺寸
-- **平滑动画**：卡片翻转和状态切换
-- **主题系统**：蓝色海洋主题
-- **交互反馈**：悬停效果和点击反馈
+- **Responsive Design**: Adapts to different screen sizes
+- **Smooth Animations**: Card flipping and state transitions
+- **Theme System**: Blue ocean theme
+- **Interactive Feedback**: Hover effects and click feedback
 
-## 📱 平台支持
+## 📱 Platform Support
 
-- **桌面**：Windows, macOS, Linux
-- **网页**：现代浏览器（Chrome, Firefox, Safari, Edge）
-- **移动端**：通过浏览器支持
+- **Desktop**: Windows, macOS, Linux
+- **Web**: Modern browsers (Chrome, Firefox, Safari, Edge)
+- **Mobile**: Supported via browser
 
-## 🔍 开发指南
+## 🔍 Development Framework
 
-### 添加新卡片
+### Adding New Cards
 
-1. 在 `ui/icons/` 目录添加新的 PNG 图标
-2. 在 `src/game/tiles.rs` 中添加新的 `TileData` 条目
-3. 确保图标路径正确
+1. Add new PNG icon to `ui/icons/` directory
+2. Add new `TileData` entry in `src/game/tiles.rs`
+3. Ensure icon path is correct
 
-### 修改音频
+### Modifying Audio
 
-1. 将音频文件放入 `raw/` 目录
-2. 在 `src/audio.rs` 中更新文件路径
-3. 支持格式：MP3, WAV, OGG
+1. Place audio file in `raw/` directory
+2. Update file path in `src/audio.rs`
+3. Supported formats: MP3, WAV, OGG
 
-### 自定义主题
+### Customizing Theme
 
-编辑 `ui/` 目录中的 `.slint` 文件来修改：
-- 颜色方案
-- 布局
-- 字体
-- 动画
+Edit `.slint` files in `ui/` directory to modify:
+- Color schemes
+- Layout
+- Fonts
+- Animations
 
-## 🐛 故障排除
+## 🐛 Troubleshooting
 
-### 常见问题
+### Common Issues
 
-1. **WASM 构建失败**
-   - 确保已安装 `wasm-pack`
-   - 检查 Rust 工具链：`rustup target add wasm32-unknown-unknown`
+1. **WASM Build Failed**
+   - Ensure `wasm-pack` is installed
+   - Check Rust toolchain: `rustup target add wasm32-unknown-unknown`
 
-2. **音频无法播放**
-   - 检查音频文件路径
-   - 网页版本需要 HTTPS 或 localhost 才能播放音频
+2. **Audio Not Playing**
+   - Check audio file paths
+   - Web version requires HTTPS or localhost to play audio
 
-3. **图标不显示**
-   - 检查图标文件是否存在
-   - 确认文件路径大小写正确
+3. **Icons Not Showing**
+   - Check if icon files exist
+   - Confirm file path case correctness
 
-### 调试
+### Debugging
 
 ```bash
-# 详细构建输出
+# Verbose build output
 cargo build --verbose --features desktop
 
-# WASM 调试构建
+# WASM debug build
 wasm-pack build --target web --out-dir pkg --dev -- --features wasm --no-default-features
 
-# 检查WASM代码（不实际构建WASM）
+# Check WASM code (without actual WASM build)
 cargo check --features wasm --no-default-features
 ```
 
-## 📄 许可证
+## 📄 License
 
-本项目基于 MIT 许可证开源。详见 [LICENSE](LICENSE) 文件。
+This project is open sourced under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Issues and Pull Requests are welcome!
 
-### 开发指南
+### Development Guidelines
 
-项目使用特性（features）来区分不同平台：
-- `desktop`：桌面版本特性（默认启用）
-- `wasm`：WebAssembly版本特性
+The project uses features to distinguish between platforms:
+- `desktop`: Desktop version features (enabled by default)
+- `wasm`: WebAssembly version features
 
-开发时请注意：
-1. 使用 `#[cfg(feature = "desktop")]` 和 `#[cfg(feature = "wasm")]` 进行条件编译
-2. 桌面和WASM版本共享大部分游戏逻辑
-3. 平台特定的代码（如音频、文件访问）需要分别实现
+When developing, please note:
+1. Use `#[cfg(feature = "desktop")]` and `#[cfg(feature = "wasm")]` for conditional compilation
+2. Desktop and WASM versions share most game logic
+3. Platform-specific code (like audio, file access) needs separate implementations
 
-### 贡献步骤
-1. Fork 项目
-2. 创建功能分支
-3. 提交更改
-4. 推送到分支
-5. 创建 Pull Request
+### Contribution Steps
+1. Fork the project
+2. Create a feature branch
+3. Commit changes
+4. Push to the branch
+5. Create a Pull Request
 
-## 🙏 致谢
+## 🙏 Acknowledgements
 
-- [Slint UI](https://slint.rs/) - 优秀的 Rust UI 框架
-- [Rust 社区](https://www.rust-lang.org/) - 强大的工具和库
-- 所有贡献者和用户
+- [Slint UI](https://slint.rs/) - Excellent Rust UI framework
+- [Rust Community](https://www.rust-lang.org/) - Powerful tools and libraries
+- All contributors and users
 
 ---
 
-**海洋世界等你来探索！** 🌊🐠
+**Ocean world awaits your exploration!** 🌊🐠

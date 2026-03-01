@@ -57,7 +57,7 @@ component MemoryTile inherits Rectangle {
 }
 
 export component GameWindow inherits Rectangle {
-    // 游戏窗口现在是一个组件，不再是顶级窗口
+    // The game window is now a component, not a top-level window
     
     callback check_if_pair_solved();
     callback play_match_sound();
@@ -66,21 +66,21 @@ export component GameWindow inherits Rectangle {
 
     in-out property <[TileData]> memory_tiles: [];
     
-    // 游戏区域容器
+    // Game area container
     Rectangle {
         background: #f0f0f0;
         border-radius: 10px;
         
-        // 响应式布局 - 确保在各种屏幕尺寸下都能居中
+        // Responsive Layout - Ensure centering on all screen sizes
         width: min(root.width * 0.9, 360px);
         height: min(root.height * 0.8, 360px);
         x: (root.width - self.width) / 2;
         y: (root.height - self.height) / 2;
         
-        // 计算网格布局参数 - 确保网格在容器中居中
+        // Calculate grid layout parameters - Ensure the grid is centered in the container
         property <length> available_space: min(self.width - 40px, self.height - 40px);
         property <length> grid_size: min(available_space, 280px);
-        property <length> tile_size: grid_size / 4.5; // 留出间距
+        property <length> tile_size: grid_size / 4.5; // Reserve spacing
         property <length> tile_spacing: (grid_size - 4 * tile_size) / 3;
         property <length> grid_start_x: (self.width - grid_size) / 2;
         property <length> grid_start_y: (self.height - grid_size) / 2;
