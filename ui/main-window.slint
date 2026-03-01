@@ -206,7 +206,7 @@ export component MainWindow inherits Window {
         background: #00000088;
 
         // Prevent clicks passing through to game area
-        TouchArea {}
+        TouchArea { }
 
         Rectangle {
             width: min(root.width * 0.8, 300px);
@@ -231,11 +231,27 @@ export component MainWindow inherits Window {
                     font-weight: 700;
                 }
 
-                Text {
-                    text: "You matched all pairs!";
-                    font-size: 15px;
-                    color: #7f8c8d;
-                    horizontal-alignment: center;
+                Rectangle {
+                    height: 36px;
+                    background: #eef2ff;
+                    border-radius: 8px;
+                    border-width: 1.5px;
+                    border-color: #3960D5;
+
+                    Text {
+                        text: "View Source on GitHub";
+                        font-size: 14px;
+                        color: #3960D5;
+                        font-weight: 600;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+
+                    TouchArea {
+                        clicked => {
+                            root.open_github_page();
+                        }
+                    }
                 }
 
                 HorizontalLayout {
