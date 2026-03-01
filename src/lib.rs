@@ -24,10 +24,17 @@ pub fn start_app() -> Result<(), wasm_bindgen::JsValue> {
     // Initialize game
     crate::game::init(&main_window);
 
-    // Handle GitHub page open
+    // Handle GitHub page open (main page -> profile)
     main_window.on_open_github_page(move || {
         if let Some(window) = web_sys::window() {
             let _ = window.open_with_url("https://github.com/tsaolun");
+        }
+    });
+
+    // Handle GitHub repo open (victory screen -> repo)
+    main_window.on_open_github_repo(move || {
+        if let Some(window) = web_sys::window() {
+            let _ = window.open_with_url("https://github.com/tsaolun/always-blue");
         }
     });
 

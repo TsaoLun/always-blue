@@ -18,9 +18,16 @@ fn main() -> Result<(), slint::PlatformError> {
     // Initialize game
     game::init(&main_window);
 
-    // Handle GitHub page opening
+    // Handle GitHub page opening (main page -> profile)
     main_window.on_open_github_page(move || {
         if let Err(e) = open::that("https://github.com/tsaolun") {
+            eprintln!("Failed to open URL: {}", e);
+        }
+    });
+
+    // Handle GitHub repo opening (victory screen -> repo)
+    main_window.on_open_github_repo(move || {
+        if let Err(e) = open::that("https://github.com/tsaolun/always-blue") {
             eprintln!("Failed to open URL: {}", e);
         }
     });

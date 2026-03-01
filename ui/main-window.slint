@@ -249,7 +249,7 @@ export component MainWindow inherits Window {
 
                     TouchArea {
                         clicked => {
-                            root.open_github_page();
+                            root.open_github_repo();
                         }
                     }
                 }
@@ -307,8 +307,10 @@ export component MainWindow inherits Window {
         }
     }
 
-    // GitHub page open callback
+    // GitHub page open callback (main page -> profile)
     callback open_github_page();
+    // GitHub repo open callback (victory screen -> repo)
+    callback open_github_repo();
 
     // Game and audio callbacks
     callback start_game_session();
